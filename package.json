@@ -40,5 +40,6 @@
     "hello",
     "greeter"
   ],
-  "author": "dylanverstraete"
+  "author": "dylanverstraete",
+  "dependencies": {}
 }
