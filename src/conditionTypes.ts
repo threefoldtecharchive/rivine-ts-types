@@ -1,27 +1,25 @@
-export class Condition {
+export abstract class Condition {
   type: number;
+  id?: string;
 
   constructor (type: number) {
     this.type = type;
   }
 
-  getConditionType () {
+  getConditionType () : number {
     return this.type;
   }
 
-  getConditionTypeAsString () {
-    switch (this.type) {
-      case 0:
-        return "Base Condition"
-      case 1:
-        return "Unlockhash Condition"
-      case 2:
-        return "Atomic Swap Condition"
-      case 3:
-        return ""
-      default:
-        throw new Error("Uknown condition type")
-    }
+  abstract getConditionTypeAsString () : string;
+}
+
+export class NilCondition extends Condition {
+  constructor (type: number) {
+    super(type)
+  }
+
+  getConditionTypeAsString () : string {
+    return "Nil Condition"
   }
 }
 
@@ -31,6 +29,10 @@ export class UnlockhashCondition extends Condition {
   constructor (type: number, unlockhash: string) {
     super(type)
     this.unlockhash = unlockhash;
+  }
+
+  getConditionTypeAsString () : string {
+    return "Unlockhash Condition"
   }
 }
 
@@ -47,16 +49,24 @@ export class AtomicSwapCondition extends Condition {
     this.hashedSecret = hashedsecret;
     this.timelock = timelock;
   }
+
+  getConditionTypeAsString () : string {
+    return "Atomic Swap Condition"
+  }
 }
 
 export class TimelockCondition extends Condition {
   locktime: number;
-  condition: UnlockhashCondition|MultisignatureCondition;
+  condition: UnlockhashCondition|MultisignatureCondition|NilCondition;
 
-  constructor (type: number, locktime: number, condition: UnlockhashCondition|MultisignatureCondition) {
+  constructor (type: number, locktime: number, condition: UnlockhashCondition|MultisignatureCondition|NilCondition) {
     super(type);
     this.locktime = locktime;
     this.condition = condition;
+  }
+
+  getConditionTypeAsString () : string {
+    return "Timelock Condition"
   }
 }
 
@@ -68,5 +78,9 @@ export class MultisignatureCondition extends Condition {
     super(type);
     this.unlockhashes = unlockhashes;
     this.signatureCount = signatureCount;
+  }
+
+  getConditionTypeAsString () : string {
+    return "Multisignature Condition"
   }
 }

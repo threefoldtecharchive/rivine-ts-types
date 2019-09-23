@@ -1,12 +1,13 @@
-import { FormatAPIResponse } from '../index'
+import { Parser } from '../parser'
 import { transactionIdJSON, blockidJSON } from '../testdata/transactionid'
-import { Block, Transaction } from '../types';
+import { Block, Transaction, Wallet } from '../types';
 
 test('test', () => {
   const res = {
     data: blockidJSON
   }
-  const formatted = FormatAPIResponse(res.data)
-  expect(formatted instanceof Block)
-  console.log(formatted)
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(res.data)
+  expect(parsedResponse instanceof Block)
+  console.log(parsedResponse)
 });

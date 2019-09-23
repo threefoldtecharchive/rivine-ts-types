@@ -1,26 +1,15 @@
-export class Fulfillment {
+export abstract class Fulfillment {
   type: number;
 
   constructor (type: number) {
     this.type = type;
   }
 
-  getFulfillmentType () {
+  getFulfillmentType () : number {
     return this.type;
   }
 
-  getFulfillmentTypeAsString () {
-    switch (this.type) {
-      case 1:
-        return "Single Signature Fulfillment"
-      case 2:
-        return "Atomic Swap Fulfillment"
-      case 3:
-        return "Multisignature Fulfillment"
-      default:
-        throw new Error("Uknown fulfillment type")
-    }
-  }
+  abstract getFulfillmentTypeAsString () : string
 }
 
 export class SingleSignatureFulfillment extends Fulfillment {
@@ -31,6 +20,10 @@ export class SingleSignatureFulfillment extends Fulfillment {
     super(type);
     this.publicKey = publicKey;
     this.signature = signature;
+  }
+
+  getFulfillmentTypeAsString () : string {
+    return "Single Signature Fulfillment"
   }
 }
 
@@ -44,6 +37,10 @@ export class AtomicSwapFulfillment extends Fulfillment {
     this.publicKey = publicKey;
     this.signature = signature;
   }
+
+  getFulfillmentTypeAsString () : string {
+    return "Atomic Swap Fulfillment"
+  }
 }
 
 export class MultisignatureFulfillment extends Fulfillment {
@@ -52,6 +49,10 @@ export class MultisignatureFulfillment extends Fulfillment {
   constructor(type: number, pairs: KeyPair[]) {
     super(type);
     this.pairs = pairs;
+  }
+
+  getFulfillmentTypeAsString () : string {
+    return "Multisignature Fulfillment"
   }
 }
 

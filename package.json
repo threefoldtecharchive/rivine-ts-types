@@ -41,5 +41,7 @@
     "greeter"
   ],
   "author": "dylanverstraete",
-  "dependencies": {}
+  "dependencies": {
+    "decimal.js": "^10.2.0"
+  }
 }
