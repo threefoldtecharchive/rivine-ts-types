@@ -15,11 +15,11 @@ export class Parser {
     this.precision = Math.pow(10, this.precision);
   }
 
-  ParseJSONResponse (res: any): Transaction|Block|Wallet|{} {
+  // Returns any because when we return a union type we can't set default values for them.
+  ParseJSONResponse (res: any): any {
     if (res.hashtype === 'blockid' || res.block) {
       return this.ParseBlock(res.block);
     }
-    return {}
   }
 
   ParseBlock (block:any) : Block {
@@ -145,5 +145,4 @@ export class Parser {
         throw new Error("Fulfillment is not recongnised on data")
     }
   }
-  
 }

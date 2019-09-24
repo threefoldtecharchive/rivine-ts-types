@@ -2,7 +2,17 @@ import { Condition } from './conditionTypes'
 import { Fulfillment } from './fulfillmentTypes'
 import { Decimal } from 'decimal.js'
 
-export class Block {
+export enum ReponseType {
+  Block,
+  Transaction,
+  Wallet
+}
+
+export abstract class Response {
+  abstract kind () : number;
+}
+
+export class Block extends Response {
   id: string;
   height: number;
   timestamp: number;
@@ -10,14 +20,19 @@ export class Block {
   minerFees?: MinerFee[];
 
   constructor (id: string, height: number, timestamp: number, transactions: Transaction[]) {
+    super();
     this.id = id;
     this.height = height;
     this.timestamp = timestamp;
     this.transactions = transactions;
   }
+
+  kind () : number {
+    return ReponseType.Block
+  }
 }
 
-export class Transaction {
+export class Transaction extends Response {
   version: number;
   id?: string;
 
@@ -36,11 +51,16 @@ export class Transaction {
   unconfirmed?: boolean;
 
   constructor (version: number) {
+    super();
     this.version = version;
+  }
+
+  kind () : number {
+    return ReponseType.Transaction
   }
 }
 
-export class Wallet {
+export class Wallet extends Response {
   address: string;
   confirmedCoinBalance: Currency;
   confirmedBlockstakeBalance: number;
@@ -48,9 +68,14 @@ export class Wallet {
   coinOutputs?: Output[];
 
   constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: number) {
+    super();
     this.address = address;
     this.confirmedCoinBalance = confirmedCoinBalance;
     this.confirmedBlockstakeBalance = confirmedBlockstakeBalance;
+  }
+
+  kind () : number {
+    return ReponseType.Wallet
   }
 }
 
