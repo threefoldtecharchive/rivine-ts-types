@@ -24,7 +24,9 @@ test('test parsing block', () => {
 
   const firstTx = first(parsedResponse.transactions)
   expect(firstTx instanceof Transaction)
-  expect(firstTx.blockId).toBe(expectedBlockId)
+  if (firstTx) {
+    expect(firstTx.blockId).toBe(expectedBlockId)
+  }
 
   // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()
