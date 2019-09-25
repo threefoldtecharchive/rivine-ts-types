@@ -1,5 +1,5 @@
 export abstract class ArbitraryData {
-  value: string;
+  public value: string;
 
   constructor (value: string) {
     this.value = value;

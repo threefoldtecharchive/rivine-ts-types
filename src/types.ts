@@ -1,6 +1,6 @@
+import { Decimal } from 'decimal.js'
 import { Condition } from './conditionTypes'
 import { Fulfillment } from './fulfillmentTypes'
-import { Decimal } from 'decimal.js'
 
 export enum ResponseType {
   Block,
@@ -11,15 +11,15 @@ export enum ResponseType {
 }
 
 export abstract class Response {
-  abstract kind () : number;
+  public abstract kind () : number;
 }
 
 export class Block extends Response {
-  id: string;
-  height: number;
-  timestamp: number;
-  transactions: Transaction[];
-  minerFees?: MinerFee[];
+  public id: string;
+  public height: number;
+  public timestamp: number;
+  public transactions: Transaction[];
+  public minerFees?: MinerFee[];
 
   constructor (id: string, height: number, timestamp: number, transactions: Transaction[]) {
     super();
@@ -29,55 +29,55 @@ export class Block extends Response {
     this.transactions = transactions;
   }
 
-  kind () : number {
+  public kind () : number {
     return ResponseType.Block;
   }
 }
 
 export class Transaction extends Response {
-  version: number;
-  id?: string;
+  public version: number;
+  public id?: string;
 
   // Optional block fields
-  blockId?: string;
-  blockHeight?: number;
-  blockTime?: number;
+  public blockId?: string;
+  public blockHeight?: number;
+  public blockTime?: number;
 
-  coinInputs?: Input[];
-  coinOutputs?: Output[];
-  blockstakeInputs?: Input[];
-  blockstakeOutputs?: Output[];
+  public coinInputs?: Input[];
+  public coinOutputs?: Output[];
+  public blockstakeInputs?: Input[];
+  public blockstakeOutputs?: Output[];
 
-  extensionProperties?: Map<string, string>;
-  arbitraryData?: string;
-  unconfirmed?: boolean;
+  public extensionProperties?: Map<string, string>;
+  public arbitraryData?: string;
+  public unconfirmed?: boolean;
 
   constructor (version: number) {
     super();
     this.version = version;
   }
 
-  kind () : number {
+  public kind () : number {
     return ResponseType.Transaction;
   }
 }
 
 export class Wallet extends Response {
-  address: string;
+  public address: string;
 
   // this identifier can tell us if the Wallet belong to a blockcreator
-  isBlockCreator: boolean;
+  public isBlockCreator: boolean;
 
-  confirmedCoinBalance: Currency;
-  lastCoinSpent?: LastSpent;
-  confirmedBlockstakeBalance: Currency;
-  lastBlockStakeSpent?: LastSpent;
+  public confirmedCoinBalance: Currency;
+  public lastCoinSpent?: LastSpent;
+  public confirmedBlockstakeBalance: Currency;
+  public lastBlockStakeSpent?: LastSpent;
 
-  transactions?: Transaction[]
-  coinOutputs?: Output[];
-  minerPayouts?: Output[];
-  coinOutputsBlockCreator?: Output[];
-  blockStakesOutputsBlockCreator?: Output[];
+  public transactions?: Transaction[]
+  public coinOutputs?: Output[];
+  public minerPayouts?: Output[];
+  public coinOutputsBlockCreator?: Output[];
+  public blockStakesOutputsBlockCreator?: Output[];
 
   constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: Currency) {
     super();
@@ -89,35 +89,35 @@ export class Wallet extends Response {
     this.isBlockCreator = false;
   }
 
-  kind () : number {
+  public kind () : number {
     return ResponseType.Wallet;
   }
 }
 
 export class CoinOutputInfo extends Response {
-  output: Output;
-  input?: Input;
+  public output: Output;
+  public input?: Input;
 
   constructor (output: Output) {
     super();
     this.output = output;
   }
 
-  kind () : number {
+  public kind () : number {
     return ResponseType.CoinOutputInfo;
   }
 }
 
 export class BlockstakeOutputInfo extends Response {
-  output: Output;
-  input?: Input;
+  public output: Output;
+  public input?: Input;
 
   constructor (output: Output) {
     super();
     this.output = output;
   }
 
-  kind () : number {
+  public kind () : number {
     return ResponseType.BlockstakeOutputInfo;
   }
 }
@@ -151,7 +151,7 @@ export interface LastSpent {
 }
 
 export class Currency extends Decimal {
-  tokenPrecision: number;
+  public tokenPrecision: number;
 
   constructor(n: string | number | Currency, tokenPrecision: number) {
     const value = new Decimal(n).dividedBy(tokenPrecision);

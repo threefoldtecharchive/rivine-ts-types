@@ -1,6 +1,6 @@
 import { Parser } from '../parser'
-import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator, coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON, spentCoinOutputIdBlockCreatorJSON } from '../testdata/data'
-import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo } from '../types';
+import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator, coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON, spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON } from '../testdata/data'
+import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types';
 import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes';
 
@@ -134,7 +134,6 @@ test('test parsing a spent coin output id for blockcreator', () => {
   expect(parsedResponse.output).toBeTruthy();
   expect(parsedResponse.input).toBeTruthy();
 
-  console.log(parsedResponse)
   expect(parsedResponse).toMatchSnapshot();
 });
 
@@ -148,6 +147,19 @@ test('test parsing an unspent coin output id for blockcreator', () => {
   expect(parsedResponse.output.blockId).toBeTruthy();
 
   // Since its unspent, no input will be found
+  expect(parsedResponse.input).toBeUndefined();
+
+  expect(parsedResponse).toMatchSnapshot();
+});
+
+test('test parsing an unspent blockstake output id', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(unspentBlockStakeOutputIdJSON) as BlockstakeOutputInfo
+
+  expect(parsedResponse instanceof BlockstakeOutputInfo)
+  expect(parsedResponse.output).toBeTruthy();
+
+  // // Since its unspent, no input will be found
   expect(parsedResponse.input).toBeUndefined();
 
   expect(parsedResponse).toMatchSnapshot();

@@ -1,20 +1,20 @@
 export abstract class Fulfillment {
-  type: number;
+  public type: number;
 
   constructor (type: number) {
     this.type = type;
   }
 
-  getFulfillmentType () : number {
+  public getFulfillmentType () : number {
     return this.type;
   }
 
-  abstract getFulfillmentTypeAsString () : string
+  public abstract getFulfillmentTypeAsString () : string
 }
 
 export class SingleSignatureFulfillment extends Fulfillment {
-  publicKey: string;
-  signature: string;
+  public publicKey: string;
+  public signature: string;
 
   constructor(type: number, publicKey: string, signature:string) {
     super(type);
@@ -22,15 +22,15 @@ export class SingleSignatureFulfillment extends Fulfillment {
     this.signature = signature;
   }
 
-  getFulfillmentTypeAsString () : string {
+  public getFulfillmentTypeAsString () : string {
     return "Single Signature Fulfillment"
   }
 }
 
 export class AtomicSwapFulfillment extends Fulfillment {
-  publicKey: string;
-  signature: string;
-  secret?: string;
+  public publicKey: string;
+  public signature: string;
+  public secret?: string;
 
   constructor(type: number, publicKey: string, signature:string) {
     super(type);
@@ -38,20 +38,20 @@ export class AtomicSwapFulfillment extends Fulfillment {
     this.signature = signature;
   }
 
-  getFulfillmentTypeAsString () : string {
+  public getFulfillmentTypeAsString () : string {
     return "Atomic Swap Fulfillment"
   }
 }
 
 export class MultisignatureFulfillment extends Fulfillment {
-  pairs: KeyPair[];
+  public pairs: KeyPair[];
 
   constructor(type: number, pairs: KeyPair[]) {
     super(type);
     this.pairs = pairs;
   }
 
-  getFulfillmentTypeAsString () : string {
+  public getFulfillmentTypeAsString () : string {
     return "Multisignature Fulfillment"
   }
 }

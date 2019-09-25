@@ -43,6 +43,20 @@ CoinOutputInfo {
 }
 `;
 
+exports[`test parsing an unspent blockstake output id 1`] = `
+BlockstakeOutputInfo {
+  "output": Object {
+    "condition": UnlockhashCondition {
+      "type": 1,
+      "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+    },
+    "id": "603222de3b3e729950d6eccd9dfc4882e64cc48cb1147aa51f158afc6ddc9b1b",
+    "txId": "22a0d45ba6b2360947cffabd9634ecdba993a945b0bd5d7a49dfd0f5164c9a2e",
+    "value": "900",
+  },
+}
+`;
+
 exports[`test parsing an unspent coin output id 1`] = `
 CoinOutputInfo {
   "output": Object {
