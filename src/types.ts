@@ -2,10 +2,12 @@ import { Condition } from './conditionTypes'
 import { Fulfillment } from './fulfillmentTypes'
 import { Decimal } from 'decimal.js'
 
-export enum ReponseType {
+export enum ResponseType {
   Block,
   Transaction,
-  Wallet
+  Wallet,
+  CoinOutputInfo,
+  BlockstakeOutputInfo
 }
 
 export abstract class Response {
@@ -28,7 +30,7 @@ export class Block extends Response {
   }
 
   kind () : number {
-    return ReponseType.Block
+    return ResponseType.Block;
   }
 }
 
@@ -56,26 +58,71 @@ export class Transaction extends Response {
   }
 
   kind () : number {
-    return ReponseType.Transaction
+    return ResponseType.Transaction;
   }
 }
 
 export class Wallet extends Response {
   address: string;
+
+  // this identifier can tell us if the Wallet belong to a blockcreator
+  isBlockCreator: boolean;
+
   confirmedCoinBalance: Currency;
-  confirmedBlockstakeBalance: number;
+  lastCoinSpent?: LastSpent;
+  confirmedBlockstakeBalance: Currency;
+  lastBlockStakeSpent?: LastSpent;
+
   transactions?: Transaction[]
   coinOutputs?: Output[];
+  minerPayouts?: Output[];
+  coinOutputsBlockCreator?: Output[];
+  blockStakesOutputsBlockCreator?: Output[];
 
-  constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: number) {
+  constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: Currency) {
     super();
     this.address = address;
     this.confirmedCoinBalance = confirmedCoinBalance;
     this.confirmedBlockstakeBalance = confirmedBlockstakeBalance;
+
+    // Set default to false
+    this.isBlockCreator = false;
   }
 
   kind () : number {
-    return ReponseType.Wallet
+    return ResponseType.Wallet;
+  }
+}
+
+export class CoinOutputInfo extends Response {
+  output: Output;
+  creationTx: Transaction;
+  spentTx?: Transaction;
+
+  constructor (output: Output, creationTx: Transaction) {
+    super();
+    this.output = output;
+    this.creationTx = creationTx;
+  }
+
+  kind () : number {
+    return ResponseType.CoinOutputInfo;
+  }
+}
+
+export class BlockstakeOutputInfo extends Response {
+  output: Output;
+  creationTx: Transaction;
+  spentTx?: Transaction;
+
+  constructor (output: Output, creationTx: Transaction) {
+    super();
+    this.output = output;
+    this.creationTx = creationTx;
+  }
+
+  kind () : number {
+    return ResponseType.BlockstakeOutputInfo;
   }
 }
 
@@ -87,8 +134,9 @@ export interface Input {
 
 export interface Output {
   value: Currency;
-  condition: Condition;
+  condition?: Condition;
   id?: string;
+  spent?: boolean;
 }
 
 export interface MinerFee {
@@ -96,12 +144,17 @@ export interface MinerFee {
   unlockhash: string;
 }
 
+export interface LastSpent {
+  txid: string;
+  height: number;
+}
+
 export class Currency extends Decimal {
   tokenPrecision: number;
 
   constructor(n: string | number | Currency, tokenPrecision: number) {
-    const value = new Decimal(n).dividedBy(tokenPrecision)
+    const value = new Decimal(n).dividedBy(tokenPrecision);
     super(value);
-    this.tokenPrecision = tokenPrecision
+    this.tokenPrecision = tokenPrecision;
   }
 }

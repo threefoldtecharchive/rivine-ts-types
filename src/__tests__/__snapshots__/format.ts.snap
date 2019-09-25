@@ -1,0 +1,421 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test parsing block 1`] = `
+Block {
+  "height": 367184,
+  "id": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+  "minerFees": Array [
+    Object {
+      "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+      "value": "10",
+    },
+    Object {
+      "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+      "value": "0.2",
+    },
+  ],
+  "timestamp": 1568963542,
+  "transactions": Array [
+    Transaction {
+      "blockHeight": 367184,
+      "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+      "blockTime": 1568963542,
+      "blockstakeInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
+            "signature": "5c095a6f16780e9a78692287bb48aa40b3f8fe40398275e86e921de980b9d819f79cf6007bb69f81714a2ab60925e13ae8459016e86f39afa37e108f05e65a00",
+            "type": 1,
+          },
+          "parentid": "6402109ebc0a7aca37c63ce45b13e96c2f40104ed6ced65859b87354a451a673",
+        },
+      ],
+      "blockstakeOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+          },
+          "id": "87d11d7e6a8c381fc98195168af393d82872cc4a69749bfa3138150a85213070",
+          "value": "900",
+        },
+      ],
+      "coinInputs": Array [],
+      "coinOutputs": Array [],
+      "id": "3fd24cc322f16a019810f92e2eb2b9b9c7e3b074e6bfcf1c044cce0a74ded5f3",
+      "unconfirmed": false,
+      "version": 1,
+    },
+    Transaction {
+      "blockHeight": 367184,
+      "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+      "blockTime": 1568963542,
+      "blockstakeInputs": Array [],
+      "blockstakeOutputs": Array [],
+      "coinInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:9bb8a64732517214a451fa054378da4273722eb219b7f4c0d2f9619996e2f03b",
+            "signature": "24e72480a9b4236583b46a5b4f8f797eb5fe4163d7b4724bd498cc8e1e402fa451a0721a5dc52938a2848c3c6bd0d1d369795c946071b62494bcd0c2acb53409",
+            "type": 1,
+          },
+          "parentid": "456e41e7473e1e69853226078af16b7df94f89473324479c0f3196ee1fe4fa82",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": MultisignatureCondition {
+            "signatureCount": 2,
+            "type": 4,
+            "unlockhashes": Array [
+              "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
+              "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+            ],
+          },
+          "id": "b824e78f95745f514153c0e2047a761808733f821c9f0e5d014c38b569fa0721",
+          "value": "100",
+        },
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
+          },
+          "id": "25b73b21067a280e29c50e0ad2db8e0357cd51fd7dd42062cc840b23da3fc6c4",
+          "value": "199.9",
+        },
+      ],
+      "id": "309ad6dd62d158d7a79b0810dcde2faf38504088cfabe0a25c1ffa3d25a46c04",
+      "unconfirmed": false,
+      "version": 1,
+    },
+    Transaction {
+      "blockHeight": 367184,
+      "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+      "blockTime": 1568963542,
+      "blockstakeInputs": Array [],
+      "blockstakeOutputs": Array [],
+      "coinInputs": Array [
+        Object {
+          "fulfillment": MultisignatureFulfillment {
+            "pairs": Array [
+              Object {
+                "publickey": "ed25519:9bb8a64732517214a451fa054378da4273722eb219b7f4c0d2f9619996e2f03b",
+                "signature": "a333d5cf67399807e51a53928f3420f0a1a9e955ef72dacc1f12f94d2bdafddec78c8270e87f7aed00d62a094def6e7e034ac1fc86f0a390ffc9eca37ae7830b",
+              },
+              Object {
+                "publickey": "ed25519:aacfc6421ec2936227a607282ad38867c21107412751e2be96f99abdbacb86b0",
+                "signature": "e742aac104b2d0a0af4fba3f8ec2f9e53991782bc1992001bd66bbc8bce633be979c44ebb19c487ffb0adef4d4f31d5e93580311a8769d57458128da4291fe08",
+              },
+            ],
+            "type": 3,
+          },
+          "parentid": "b824e78f95745f514153c0e2047a761808733f821c9f0e5d014c38b569fa0721",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+          },
+          "id": "70b8ed99cc36847a702a124bfee76d66f5bc5a21201d6e892895a85051d325ee",
+          "value": "4",
+        },
+        Object {
+          "condition": MultisignatureCondition {
+            "signatureCount": 2,
+            "type": 4,
+            "unlockhashes": Array [
+              "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
+              "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+            ],
+          },
+          "id": "7f9b4564b0e66d34ba8eac3bd1630523b5721ca39c490e84e9c4e95d3298c7aa",
+          "value": "95.9",
+        },
+      ],
+      "id": "bd30d6e590597797d5d24115afeca02e4d0efc55902343e18d7bf0c30181fe43",
+      "unconfirmed": false,
+      "version": 1,
+    },
+  ],
+}
+`;
+
+exports[`test parsing transaction 1`] = `
+Transaction {
+  "blockHeight": undefined,
+  "blockId": undefined,
+  "blockTime": undefined,
+  "blockstakeInputs": Array [
+    Object {
+      "fulfillment": SingleSignatureFulfillment {
+        "publicKey": "ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b",
+        "signature": "6d796ef7369853fd8b3dd1ea7a75c8929c0e6c2387a2c5b3c78b61c34734ab65222578483458c68f8b25d5970b02665cd68e2d57972575494a40249cbaf41f0b",
+        "type": 1,
+      },
+      "parentid": "90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0",
+    },
+  ],
+  "blockstakeOutputs": Array [
+    Object {
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "01fae67d9109d9cc1d9f7209468d55d0d52eca8ff23ae26db54a14568a5511590bca2a72d13ab7",
+      },
+      "id": "25ac4e89593701f01847f28275f45cb3630624d3c86dda776cf3f2fda20afc36",
+      "value": "1000",
+    },
+  ],
+  "coinInputs": Array [],
+  "coinOutputs": Array [],
+  "id": "a759d010ec638cef7f06565f04f4d7c06d66ca4e02aa342ecce001d95135087e",
+  "unconfirmed": false,
+  "version": 1,
+}
+`;
+
+exports[`test parsing unlockhash 1`] = `
+Wallet {
+  "address": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+  "coinOutputs": Array [
+    Object {
+      "id": "da2ca522c21dd46f7c1405876253fef594835ed07f14b905c615730e63d0c7fe",
+      "spent": false,
+      "value": "300",
+    },
+    Object {
+      "id": "2bdb4f32f4c64c05b0562ee998dcf20c88c24904286f0d6f73f2475654e26d9d",
+      "spent": false,
+      "value": "300",
+    },
+    Object {
+      "id": "18c2d0762964349b4c51dcbd1b3e7c113b186a83a8216c9c9b48a3b95ee1e940",
+      "spent": false,
+      "value": "300",
+    },
+  ],
+  "confirmedBlockstakeBalance": "0",
+  "confirmedCoinBalance": "900",
+  "isBlockCreator": false,
+  "transactions": Array [
+    Transaction {
+      "blockHeight": undefined,
+      "blockId": undefined,
+      "blockTime": undefined,
+      "blockstakeInputs": Array [],
+      "blockstakeOutputs": Array [],
+      "coinInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:93546c37eb797b3d44a912f477f8fa4ad094cf36a800de05f4635ca49bd80e2d",
+            "signature": "74e51e57188f4551d03f27592eb7ee92f503b5af23265f64b860fcf25709aeb9389a282ee92a4c20fc9ccdbe862aebdf1907a4e0147642cf5422cec9d39faa04",
+            "type": 1,
+          },
+          "parentid": "4698d5c8c2691a960ff3475f919b38bc846aa732917859d8566ac7f7628c590c",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+          },
+          "id": "da2ca522c21dd46f7c1405876253fef594835ed07f14b905c615730e63d0c7fe",
+          "value": "300",
+        },
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "017d0255eaa6375d3d85a5957158d27aebc9884745c9ddd8e293161bca5e612d25dabc7018193d",
+          },
+          "id": "de29ba648f6a06666f1e36bc4876b0838cbb41e530b06a790cb91fb64cdf33d5",
+          "value": "299.8",
+        },
+      ],
+      "id": "0b434e853b4b3be43a8d4fababc673b15700adbf04538dc202f40c6763bdfc2f",
+      "unconfirmed": false,
+      "version": 1,
+    },
+    Transaction {
+      "blockHeight": undefined,
+      "blockId": undefined,
+      "blockTime": undefined,
+      "blockstakeInputs": Array [],
+      "blockstakeOutputs": Array [],
+      "coinInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:beea9d3fe3807383788f74dce5c72c61906853dbc6fe0f5fccf8855eed860e48",
+            "signature": "4407bff0a0be1c30d9808128319efaf67022968e188fdfecf6bec683b6321ee45c3e42f10823a9120c08349e45204df970d94e87837c0950771a9bec57767b05",
+            "type": 1,
+          },
+          "parentid": "04932c4eae3a9630ffdb94d173751845a2adcf900fdd172e506a58921806f005",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+          },
+          "id": "2bdb4f32f4c64c05b0562ee998dcf20c88c24904286f0d6f73f2475654e26d9d",
+          "value": "300",
+        },
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "01173ae0923b637fffeb2e74fbaf7f353457bf8f133c3cef667be263e05ac737804d6bfc1c0cde",
+          },
+          "id": "caf09f1effce78b7c3be4b3b530c16f616a60feb463c9b9b46803855b0373b02",
+          "value": "299.8",
+        },
+      ],
+      "id": "156fc468dbeee709819eca1d86dc631966bf2df46ff29f4c5324b292ffb5dbe5",
+      "unconfirmed": false,
+      "version": 1,
+    },
+    Transaction {
+      "blockHeight": undefined,
+      "blockId": undefined,
+      "blockTime": undefined,
+      "blockstakeInputs": Array [],
+      "blockstakeOutputs": Array [],
+      "coinInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:50661fe34fefc8a2c7b24bf48236e887538fd6091e4bead2a8bcb8ab3f73e185",
+            "signature": "7dec0e8f6104c41d6d8a1424aaa17566e56212fb0b217b132f905f14f1561e57ca37b80f06067851a045ff74ef498056f1b00492e49395209b580d7d4901af04",
+            "type": 1,
+          },
+          "parentid": "37cefaf64a28273a0576272675e91f6676263029d79d560948d0021f371ea6e6",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+          },
+          "id": "18c2d0762964349b4c51dcbd1b3e7c113b186a83a8216c9c9b48a3b95ee1e940",
+          "value": "300",
+        },
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "01b59cdc9c9a6b8bc9c628e979d0dbb477f3ded6e5599cd5c11b921dc83826a8425013f5831466",
+          },
+          "id": "5340120bf6b9fa478d7b63bf1ad0c5effa6a68624cb9b581ed7ceb36a0ba4ca8",
+          "value": "299.8",
+        },
+      ],
+      "id": "bf0e1dd403a4c4ecc78e26695ff81ad160334a4fae14a56a20b68a82b689b263",
+      "unconfirmed": false,
+      "version": 1,
+    },
+  ],
+}
+`;
+
+exports[`test parsing unlockhash blockcreator 1`] = `
+Wallet {
+  "address": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+  "blockStakesOutputsBlockCreator": Array [
+    Object {
+      "id": "b080442f38a245e24dfe1202102ad43613ade70ae2fee47f9932745e9be0a6cc",
+      "spent": false,
+      "value": "3000",
+    },
+    Object {
+      "id": "b6ef86dd8f75fc0ed6b5a3794fdd1500bcda58c934aefa3816eb6dce246a8c83",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "1d7f4ac218a2f360dd802843a0003443f77d151ba9329fdecbd8da37519b3419",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "af3e9b0f1834767655587cd59688b7fe290dc716be13196d2560cb116781df15",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "a2b2224e60d42a2e23384f480a0732333dc878f5622dc0f20dac01cb58839bb0",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "cfe78f68f4597ba00472859be59a3b5d32616484ea12604ddc7df6c00095487d",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "2a33b5d09f095e31121df5a880b3767978ba0dc0a018159a72e7646faae73500",
+      "spent": true,
+      "value": "3000",
+    },
+    Object {
+      "id": "5e9c485e44f1fe202a43261ea0e62f6b6a1497380db1f93c7e4a9ad95e63dc58",
+      "spent": true,
+      "value": "3000",
+    },
+  ],
+  "coinOutputsBlockCreator": Array [
+    Object {
+      "id": "a3c8f44d64c0636018a929d2caeec09fb9698bfdcbfa3a8225585a51e09ee563",
+      "spent": false,
+      "value": "100000000",
+    },
+  ],
+  "confirmedBlockstakeBalance": "3000",
+  "confirmedCoinBalance": "100000070",
+  "isBlockCreator": true,
+  "lastBlockStakeSpent": Object {
+    "height": 7,
+    "txid": "532d13050f750f137477317985971d84895076e2c24c87670e95b2509d9d16c6",
+  },
+  "lastCoinSpent": Object {
+    "height": 0,
+    "txid": "",
+  },
+  "minerPayouts": Array [
+    Object {
+      "id": "8eb9799436045b37ac602dbf9017dd1a75f05c49316d04a960cb49c29e56f290",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "a23129f85650a2327a7c30b6f738a067d9d77eebb2a5d4ad1beb8603ce3c66cd",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "5285b4ccf01ba1ba9b42dab14710cf02d570170cf6fd604a83e9ed93dca6de31",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "2579621212a8509033bf8140dc5a4edad7462bcfd3ff8d74259ba87e304bfd58",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "6e4f409b5b58929174c8f980740baa3dacffb7a4e1e6af93d709668c873339cf",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "b59a1cb70415b56d47627a12ad7c8cc6e603153083c9d062c9a62deb8ba3a8c9",
+      "spent": false,
+      "value": "10",
+    },
+    Object {
+      "id": "c22eabdb39943440266a9ea45409858bcff3060c22ab34c95bb0e5be54311c6e",
+      "spent": false,
+      "value": "10",
+    },
+  ],
+}
+`;
