@@ -1,15 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`test parsing a spent coin output id 1`] = `
+CoinOutputInfo {
+  "input": Object {
+    "fulfillment": SingleSignatureFulfillment {
+      "publicKey": "ed25519:47c54e33cdfa770f2180af660d27881d1dbc544b37a4233390af603162c7433d",
+      "signature": "b16cdc4ff45bf58188c570ca858785a7be8a85be878322399721f89bb44cad94070411c9999eeb9eaafe8a26c6ea94532c3f9d5a2a995536e55e66b2dda0f605",
+      "type": 1,
+    },
+    "parentid": "6321aecd61aa7ae6d37e611a9e3d3eba898b752789df2b559dcca5b11429ca4b",
+    "txId": "8b13271e8b67961d066a80b1964bcb7e251d178e607e94b9992a76bc0d172647",
+  },
+  "output": Object {
+    "condition": UnlockhashCondition {
+      "type": 1,
+      "unlockhash": "01fc8714235d549f890f35e52d745b9eeeee34926f96c4b9ef1689832f338d9349b453898f7e51",
+    },
+    "id": "6321aecd61aa7ae6d37e611a9e3d3eba898b752789df2b559dcca5b11429ca4b",
+    "txId": "10e6de771da2d2030cbfcfa84a0be36081d2d8eb376c9cd8dfc22aa589662541",
+    "value": "100000000",
+  },
+}
+`;
+
+exports[`test parsing a spent coin output id for blockcreator 1`] = `
+CoinOutputInfo {
+  "input": Object {
+    "fulfillment": SingleSignatureFulfillment {
+      "publicKey": "ed25519:5bb0b087153c906fb0728b10d0336816cf20b51540924ed99f4093b364092880",
+      "signature": "c23082244d8982abcd9dc49b0b1ccc7ad7c4aa6b29c7f99548aad6f6c6e460074aca2fd8fad12081e2889ba07c2cd65b8e9e7a5168d897c685fd70950f951802",
+      "type": 1,
+    },
+    "parentid": "3559a1efb6b2f14edd1c885d61068979e56dc66cd8861d98a9ba77e54453d434",
+    "txId": "6a63cd6e6f680ed5d02d7eae8539664bb59ab94c09d055f4be65bde5930fab2e",
+  },
+  "output": Object {
+    "blockId": "005eb62e4ff226d4cfa17b125352f85a61146b8b909804052d0cad2fde0c822b",
+    "id": "3559a1efb6b2f14edd1c885d61068979e56dc66cd8861d98a9ba77e54453d434",
+    "isBlockCreatorReward": true,
+    "value": "10",
+  },
+}
+`;
+
+exports[`test parsing an unspent coin output id 1`] = `
+CoinOutputInfo {
+  "output": Object {
+    "condition": UnlockhashCondition {
+      "type": 1,
+      "unlockhash": "01b2cc84e99844f8169d23cee1545e88f780b0f49e3c92463ccd9c23177f7fa173cc8a14fc7c17",
+    },
+    "id": "a428df56e77c40621333f2923f27e885702f1ba9a3dc52f41e97c0a4784fea64",
+    "txId": "0d9eedaeacd7dd7e08975a16440352eb3c214e91f9dfb0d00b62be39468578c4",
+    "value": "300",
+  },
+}
+`;
+
+exports[`test parsing an unspent coin output id for blockcreator 1`] = `
+CoinOutputInfo {
+  "output": Object {
+    "blockId": "6d298dc80f5b099399a0946997387b5326ded0502cda3e14df1999a87bfd17cb",
+    "id": "f0bf7ede4bb6c38cf3199b8a1c3501ed48346bd926bf5bfe6c3a2dcadcfa4af9",
+    "isBlockCreatorReward": true,
+    "value": "10",
+  },
+}
+`;
+
 exports[`test parsing block 1`] = `
 Block {
   "height": 367184,
   "id": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
   "minerFees": Array [
     Object {
+      "id": "cf958eb5c1b44ea603bfe29afbb22ba72371a48f881d1abdd6dc63a8b05254c4",
       "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
       "value": "10",
     },
     Object {
+      "id": "c71f58335faf9a31a4c76877c448dd756eac95c8061968215fd4a1ce88cbcec2",
       "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
       "value": "0.2",
     },

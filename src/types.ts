@@ -96,13 +96,11 @@ export class Wallet extends Response {
 
 export class CoinOutputInfo extends Response {
   output: Output;
-  creationTx: Transaction;
-  spentTx?: Transaction;
+  input?: Input;
 
-  constructor (output: Output, creationTx: Transaction) {
+  constructor (output: Output) {
     super();
     this.output = output;
-    this.creationTx = creationTx;
   }
 
   kind () : number {
@@ -112,13 +110,11 @@ export class CoinOutputInfo extends Response {
 
 export class BlockstakeOutputInfo extends Response {
   output: Output;
-  creationTx: Transaction;
-  spentTx?: Transaction;
+  input?: Input;
 
-  constructor (output: Output, creationTx: Transaction) {
+  constructor (output: Output) {
     super();
     this.output = output;
-    this.creationTx = creationTx;
   }
 
   kind () : number {
@@ -130,6 +126,7 @@ export interface Input {
   parentid: string;
   fulfillment: Fulfillment;
   parentOutput?: Output;
+  txid?: string;
 }
 
 export interface Output {
@@ -137,11 +134,15 @@ export interface Output {
   condition?: Condition;
   id?: string;
   spent?: boolean;
+  txId?: string;
+  blockId?: string;
+  isBlockCreatorReward?: boolean;
 }
 
 export interface MinerFee {
   value: Currency;
   unlockhash: string;
+  id: string;
 }
 
 export interface LastSpent {

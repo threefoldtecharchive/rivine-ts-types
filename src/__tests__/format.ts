@@ -1,6 +1,6 @@
 import { Parser } from '../parser'
-import { transactionIdJSON, blockidJSON, blockstakeOutputId, unlockhash, unlockhashBlockCreator } from '../testdata/data'
-import { Block, Transaction, Wallet, ResponseType } from '../types';
+import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator, coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON, spentCoinOutputIdBlockCreatorJSON } from '../testdata/data'
+import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo } from '../types';
 import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes';
 
@@ -102,11 +102,53 @@ test('test parsing unlockhash blockcreator', () => {
   expect(parsedResponse).toMatchSnapshot();
 });
 
-// test('test parsing blockstake output id', () => {
-//   const parser = new Parser()
-//   const parsedResponse = parser.ParseJSONResponse(blockstakeOutputId)
+test('test parsing a spent coin output id', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(coinoutputIdJSON) as CoinOutputInfo;
 
-//   expect(parsedResponse instanceof Transaction)
+  expect(parsedResponse instanceof CoinOutputInfo)
+  expect(parsedResponse.output).toBeTruthy();
+  expect(parsedResponse.input).toBeTruthy();
 
-//   // console.log(parsedResponse)
-// });
+  expect(parsedResponse).toMatchSnapshot();
+});
+
+test('test parsing an unspent coin output id', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(unspentCoinoutputIdJSON)
+
+  expect(parsedResponse instanceof CoinOutputInfo)
+  expect(parsedResponse.output).toBeTruthy();
+
+  // Since its unspent, no input will be found
+  expect(parsedResponse.input).toBeUndefined();
+
+  expect(parsedResponse).toMatchSnapshot();
+});
+
+test('test parsing a spent coin output id for blockcreator', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(spentCoinOutputIdBlockCreatorJSON) as CoinOutputInfo;
+
+  expect(parsedResponse instanceof CoinOutputInfo)
+  expect(parsedResponse.output).toBeTruthy();
+  expect(parsedResponse.input).toBeTruthy();
+
+  console.log(parsedResponse)
+  expect(parsedResponse).toMatchSnapshot();
+});
+
+test('test parsing an unspent coin output id for blockcreator', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseJSONResponse(unspentCoinOutputIDBlockCreatorJSON) as CoinOutputInfo
+
+  expect(parsedResponse instanceof CoinOutputInfo)
+  expect(parsedResponse.output).toBeTruthy();
+  expect(parsedResponse.output.isBlockCreatorReward).toBe(true);
+  expect(parsedResponse.output.blockId).toBeTruthy();
+
+  // Since its unspent, no input will be found
+  expect(parsedResponse.input).toBeUndefined();
+
+  expect(parsedResponse).toMatchSnapshot();
+});

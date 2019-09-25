@@ -1,7 +1,7 @@
 import { Condition, UnlockhashCondition, AtomicSwapCondition, MultisignatureCondition, TimelockCondition, NilCondition } from './conditionTypes';
-import { Input, Output, Block, Transaction, Wallet, MinerFee, Currency, LastSpent } from './types';
+import { Input, Output, Block, Transaction, Wallet, MinerFee, Currency, LastSpent, CoinOutputInfo } from './types';
 import { Fulfillment, SingleSignatureFulfillment, AtomicSwapFulfillment, MultisignatureFulfillment, KeyPair } from './fulfillmentTypes';
-import { flatten } from 'lodash'
+import { flatten, find } from 'lodash'
 import Decimal from 'decimal.js';
 
 const nullId = '0000000000000000000000000000000000000000000000000000000000000000'
@@ -22,7 +22,10 @@ export class Parser {
   // Returns any because when we return a union type we can't set default values for them.
   ParseJSONResponse (res: any): any {
     if (res.hashtype === 'unlockhash') {
-      return this.ParseWalletAddress(res)
+      return this.ParseWalletAddress(res);
+    }
+    if (res.hashtype === 'coinoutputid') {
+      return this.ParseCoinOutput(res);
     }
     if (res.block && res.block.blockid != nullId) {
       return this.ParseBlock(res.block);
@@ -281,17 +284,18 @@ export class Parser {
   }
 
   ParseBlock (block:any) : Block {
-    const { blockid:id, height, transactions, rawblock } = block;
+    const { blockid:id, height, transactions, rawblock, minerpayoutids } = block;
     const { timestamp, minerpayouts } = rawblock;
 
     const parsedTransactions = transactions.map((tx: any) => this.ParseTransaction(tx, id, height, timestamp))
     const parsedBlock = new Block(id, height, timestamp, parsedTransactions);
 
     if (minerpayouts.length > 0) {
-      parsedBlock.minerFees = minerpayouts.map((mp:MinerFee) => {
+      parsedBlock.minerFees = minerpayouts.map((mp:MinerFee, index: number) => {
         return {
           value: new Currency(mp.value, this.precision),
-          unlockhash: mp.unlockhash
+          unlockhash: mp.unlockhash,
+          id: minerpayoutids[index]
         }
       })
     }
@@ -330,6 +334,78 @@ export class Parser {
     // todo add arbitrary data and extension props
 
     return transaction
+  }
+
+  // getCoinOutputInfo gets coinoutput information for a normal coin outputs and also for blockcreator coin outputs
+  ParseCoinOutput (res: any): CoinOutputInfo | undefined {
+    const { blocks, transactions } = res;
+    let parsedTransactions: Transaction[] = [];
+    let parsedBlocks: Block[] = [];
+    let hash: string = ''
+
+    if (transactions) {
+      hash = transactions[0].coinoutputids[0]
+      parsedTransactions = transactions.map((tx: Transaction) => this.ParseTransaction(tx))
+    }
+
+    if (blocks) {
+      hash = blocks[0].minerpayoutids[0]
+      parsedBlocks = blocks.map((block: Block) => this.ParseBlock(block)) as Block[];
+    }
+
+    let coinOutput: any;
+    let coinInput: any;
+
+    parsedTransactions.forEach((tx: Transaction) => {
+      const { coinOutputs, coinInputs } = tx;
+
+      // If coinoutputs are defined, start looking for the coinoutput that matches our hash
+      if (coinOutputs) {
+        // Only try finding output when there is none present, else it will override with undefined
+        if (!coinOutput) {
+          coinOutput = find(coinOutputs, (co:Output) => co.id === hash) as Output;
+          // If found set txid
+          if (coinOutput) {
+            coinOutput.txId = tx.id;
+          }
+        }
+      }
+
+      // If coininputs are defined, start looking for the coininput that matches our hash
+      if (coinInputs) {
+        // If a coininput with parent id equal to the hash we are looking for is found that the output is spent
+        if (!coinInput) {
+          coinInput = find(coinInputs, (co:Input) => co.parentid === hash) as Input;
+          // If found set txid
+          if (coinInput) {
+            coinInput.txId = tx.id;
+          }
+        }
+      }
+    });
+
+    // If no coin ouput is found then it is most likely a blockcreator output.
+    // we now look inside the minerfees if we can find this output
+    if (!coinOutput) {
+      parsedBlocks.forEach((block: Block) => {
+        const minerFee = find(block.minerFees, (mf: MinerFee) => mf.id === hash) as MinerFee
+        if (minerFee) {
+          coinOutput = {
+            id: minerFee.id,
+            value: minerFee.value,
+            blockId: block.id,
+            isBlockCreatorReward: true
+          } as Output
+        }
+      })
+    }
+
+    // Wrap found coinout / coininput and return
+    const coinOutputInfo = new CoinOutputInfo(coinOutput);
+    if (coinInput) {
+      coinOutputInfo.input = coinInput;
+    }
+    return coinOutputInfo
   }
 
   getOutputs(outputs: any, outputIds: any): Output[] {
