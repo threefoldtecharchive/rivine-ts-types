@@ -11,151 +11,151 @@ export enum ResponseType {
 }
 
 export abstract class Response {
-  public abstract kind () : number;
+  public abstract kind (): number
 }
 
 export class Block extends Response {
-  public id: string;
-  public height: number;
-  public timestamp: number;
-  public transactions: Transaction[];
-  public minerFees?: MinerFee[];
+  public id: string
+  public height: number
+  public timestamp: number
+  public transactions: Transaction[]
+  public minerFees?: MinerFee[]
 
   constructor (id: string, height: number, timestamp: number, transactions: Transaction[]) {
-    super();
-    this.id = id;
-    this.height = height;
-    this.timestamp = timestamp;
-    this.transactions = transactions;
+    super()
+    this.id = id
+    this.height = height
+    this.timestamp = timestamp
+    this.transactions = transactions
   }
 
-  public kind () : number {
-    return ResponseType.Block;
+  public kind (): number {
+    return ResponseType.Block
   }
 }
 
 export class Transaction extends Response {
-  public version: number;
-  public id?: string;
+  public version: number
+  public id?: string
 
   // Optional block fields
-  public blockId?: string;
-  public blockHeight?: number;
-  public blockTime?: number;
+  public blockId?: string
+  public blockHeight?: number
+  public blockTime?: number
 
-  public coinInputs?: Input[];
-  public coinOutputs?: Output[];
-  public blockstakeInputs?: Input[];
-  public blockstakeOutputs?: Output[];
+  public coinInputs?: Input[]
+  public coinOutputs?: Output[]
+  public blockstakeInputs?: Input[]
+  public blockstakeOutputs?: Output[]
 
-  public extensionProperties?: Map<string, string>;
-  public arbitraryData?: string;
-  public unconfirmed?: boolean;
+  public extensionProperties?: Map<string, string>
+  public arbitraryData?: string
+  public unconfirmed?: boolean
 
   constructor (version: number) {
-    super();
-    this.version = version;
+    super()
+    this.version = version
   }
 
-  public kind () : number {
-    return ResponseType.Transaction;
+  public kind (): number {
+    return ResponseType.Transaction
   }
 }
 
 export class Wallet extends Response {
-  public address: string;
+  public address: string
 
   // this identifier can tell us if the Wallet belong to a blockcreator
-  public isBlockCreator: boolean;
+  public isBlockCreator: boolean
 
-  public confirmedCoinBalance: Currency;
-  public lastCoinSpent?: LastSpent;
-  public confirmedBlockstakeBalance: Currency;
-  public lastBlockStakeSpent?: LastSpent;
+  public confirmedCoinBalance: Currency
+  public lastCoinSpent?: LastSpent
+  public confirmedBlockstakeBalance: Currency
+  public lastBlockStakeSpent?: LastSpent
 
   public transactions?: Transaction[]
-  public coinOutputs?: Output[];
-  public minerPayouts?: Output[];
-  public coinOutputsBlockCreator?: Output[];
-  public blockStakesOutputsBlockCreator?: Output[];
+  public coinOutputs?: Output[]
+  public minerPayouts?: Output[]
+  public coinOutputsBlockCreator?: Output[]
+  public blockStakesOutputsBlockCreator?: Output[]
 
   constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: Currency) {
-    super();
-    this.address = address;
-    this.confirmedCoinBalance = confirmedCoinBalance;
-    this.confirmedBlockstakeBalance = confirmedBlockstakeBalance;
+    super()
+    this.address = address
+    this.confirmedCoinBalance = confirmedCoinBalance
+    this.confirmedBlockstakeBalance = confirmedBlockstakeBalance
 
     // Set default to false
-    this.isBlockCreator = false;
+    this.isBlockCreator = false
   }
 
-  public kind () : number {
-    return ResponseType.Wallet;
+  public kind (): number {
+    return ResponseType.Wallet
   }
 }
 
 export class CoinOutputInfo extends Response {
-  public output: Output;
-  public input?: Input;
+  public output: Output
+  public input?: Input
 
   constructor (output: Output) {
-    super();
-    this.output = output;
+    super()
+    this.output = output
   }
 
-  public kind () : number {
-    return ResponseType.CoinOutputInfo;
+  public kind (): number {
+    return ResponseType.CoinOutputInfo
   }
 }
 
 export class BlockstakeOutputInfo extends Response {
-  public output: Output;
-  public input?: Input;
+  public output: Output
+  public input?: Input
 
   constructor (output: Output) {
-    super();
-    this.output = output;
+    super()
+    this.output = output
   }
 
-  public kind () : number {
-    return ResponseType.BlockstakeOutputInfo;
+  public kind (): number {
+    return ResponseType.BlockstakeOutputInfo
   }
 }
 
 export interface Input {
-  parentid: string;
-  fulfillment: Fulfillment;
-  parentOutput?: Output;
-  txid?: string;
+  parentid: string
+  fulfillment: Fulfillment
+  parentOutput?: Output
+  txid?: string
 }
 
 export interface Output {
-  value: Currency;
-  condition?: Condition;
-  id?: string;
-  spent?: boolean;
-  txId?: string;
-  blockId?: string;
-  isBlockCreatorReward?: boolean;
+  value: Currency
+  condition?: Condition
+  id?: string
+  spent?: boolean
+  txId?: string
+  blockId?: string
+  isBlockCreatorReward?: boolean
 }
 
 export interface MinerFee {
-  value: Currency;
-  unlockhash: string;
-  id: string;
+  value: Currency
+  unlockhash: string
+  id: string
 }
 
 export interface LastSpent {
-  txid: string;
-  height: number;
+  txid: string
+  height: number
 }
 
 export class Currency extends Decimal {
-  public tokenPrecision: number;
+  public tokenPrecision: number
 
-  constructor(n: string | number | Currency, tokenPrecision: number) {
-    const value = new Decimal(n).dividedBy(tokenPrecision);
-    super(value);
-    this.tokenPrecision = tokenPrecision;
+  constructor (n: string | number | Currency, tokenPrecision: number) {
+    const value = new Decimal(n).dividedBy(tokenPrecision)
+    super(value)
+    this.tokenPrecision = tokenPrecision
   }
 }

@@ -1,25 +1,25 @@
 export abstract class ArbitraryData {
-  public value: string;
+  public value: string
 
   constructor (value: string) {
-    this.value = value;
+    this.value = value
   }
 }
 
 export class OpaqueArbitraryData extends ArbitraryData {
   constructor (value: string) {
-    super(value);
+    super(value)
   }
 }
 
 export class StructuredArbitraryData extends ArbitraryData {
   constructor (value: string) {
-    super(value);
+    super(value)
   }
 }
 
 export class SenderMessageData extends ArbitraryData {
   constructor (value: string) {
-    super(value);
+    super(value)
   }
 }
