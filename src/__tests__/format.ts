@@ -1,11 +1,13 @@
 import { Parser } from '../'
 import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
-  spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON
+  spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
+  spentAtomicSwapCoinOutputId
 } from '../testdata/data'
 import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes'
+import { ConditionType } from '../conditionTypes'
 
 test('test parsing block', () => {
   const hash = '2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5'
@@ -165,7 +167,22 @@ test('test parsing an unspent coin output id for blockcreator', () => {
   expect(parsedResponse).toMatchSnapshot()
 })
 
-test('test parsing an unspent blockstake output id', () => {
+test('test parsing a spent atomic swap coin output id', () => {
+  const hash = '19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c'
+  const parser = new Parser()
+  const parsedResponse = parser.ParseHashResponseJSON(spentAtomicSwapCoinOutputId, hash) as CoinOutputInfo
+
+  expect(parsedResponse instanceof CoinOutputInfo)
+  expect(parsedResponse.output).toBeTruthy()
+  if (parsedResponse.output.condition) {
+    expect(parsedResponse.output.condition.getConditionType()).toBe(ConditionType.AtomicSwapCondition)
+  }
+  expect(parsedResponse.input).toBeTruthy()
+
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing an spent blockstake output id', () => {
   const hash = '603222de3b3e729950d6eccd9dfc4882e64cc48cb1147aa51f158afc6ddc9b1b'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unspentBlockStakeOutputIdJSON, hash) as BlockstakeOutputInfo
@@ -174,7 +191,7 @@ test('test parsing an unspent blockstake output id', () => {
   expect(parsedResponse.output).toBeTruthy()
 
   // // Since its unspent, no input will be found
-  expect(parsedResponse.input).toBeUndefined()
+  expect(parsedResponse.input).toBeTruthy()
 
   expect(parsedResponse).toMatchSnapshot()
 })

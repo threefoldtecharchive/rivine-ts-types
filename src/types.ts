@@ -137,6 +137,7 @@ export interface Output {
   txId?: string
   blockId?: string
   isBlockCreatorReward?: boolean
+  unlockhash?: string
 }
 
 export interface MinerFee {

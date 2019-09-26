@@ -1,3 +1,11 @@
+export enum ConditionType {
+  NilCondition,
+  UnlockhashCondition,
+  AtomicSwapCondition,
+  TimelockCondition,
+  MultisignatureCondition
+}
+
 export abstract class Condition {
   public type: number
   public id?: string
@@ -10,7 +18,7 @@ export abstract class Condition {
     return this.type
   }
 
-  public abstract getConditionTypeAsString (): string
+  public abstract getConditionTypeAsString (): number
 }
 
 export class NilCondition extends Condition {
@@ -18,8 +26,8 @@ export class NilCondition extends Condition {
     super(type)
   }
 
-  public getConditionTypeAsString (): string {
-    return 'Nil Condition'
+  public getConditionTypeAsString (): number {
+    return ConditionType.NilCondition
   }
 }
 
@@ -31,27 +39,30 @@ export class UnlockhashCondition extends Condition {
     this.unlockhash = unlockhash
   }
 
-  public getConditionTypeAsString (): string {
-    return 'Unlockhash Condition'
+  public getConditionTypeAsString (): number {
+    return ConditionType.UnlockhashCondition
   }
 }
 
 export class AtomicSwapCondition extends Condition {
   public sender: string
   public receiver: string
+  public contractAddress: string
   public hashedSecret: string
   public timelock: number
 
-  constructor (type: number, sender: string, receiver: string, hashedsecret: string, timelock: number) {
+  constructor
+  (type: number, sender: string, receiver: string, contractAddress: string, hashedsecret: string, timelock: number) {
     super(type)
     this.sender = sender
     this.receiver = receiver
+    this.contractAddress = contractAddress
     this.hashedSecret = hashedsecret
     this.timelock = timelock
   }
 
-  public getConditionTypeAsString (): string {
-    return 'Atomic Swap Condition'
+  public getConditionTypeAsString (): number {
+    return ConditionType.AtomicSwapCondition
   }
 }
 
@@ -66,8 +77,8 @@ export class TimelockCondition extends Condition {
     this.condition = condition
   }
 
-  public getConditionTypeAsString (): string {
-    return 'Timelock Condition'
+  public getConditionTypeAsString (): number {
+    return ConditionType.TimelockCondition
   }
 }
 
@@ -81,7 +92,7 @@ export class MultisignatureCondition extends Condition {
     this.signatureCount = signatureCount
   }
 
-  public getConditionTypeAsString (): string {
-    return 'Multisignature Condition'
+  public getConditionTypeAsString (): number {
+    return ConditionType.MultisignatureCondition
   }
 }

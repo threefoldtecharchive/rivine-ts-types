@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`test parsing a spent atomic swap coin output id 1`] = `
+CoinOutputInfo {
+  "input": Object {
+    "fulfillment": AtomicSwapFulfillment {
+      "publicKey": "ed25519:0057bbe7d51abdaedb1c31a2f1b3b12b3c47bdf2c31b94d248561da244fbb7da",
+      "secret": "5486225923792fd14b2e31317381154fba96e6c88f7cc6e7dd758b3c8d26c642",
+      "signature": "83e1e1225a292c42f038d2c9061969c334520ad06d45c4aa48167ebcce72eab3197cb6a7b6373d30d026dfdda50937967f0c0437dd93d15252f22819dcbbec09",
+      "type": 1,
+    },
+    "parentid": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+    "txId": "e3d4558124736231f79df3c1c1df36c737002d6c10b1097cc098ce19273d3e12",
+  },
+  "output": Object {
+    "condition": AtomicSwapCondition {
+      "contractAddress": "02ed044fa056e6fda24261628576d61f7ed580a649496a582ac0691f90f4ef89002a1a5f368c57",
+      "hashedSecret": "322382392c5c402321a0507c9a8fce1c2599e72b631eff4f207104e4f225acfd",
+      "receiver": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+      "sender": "01d8a5b1f0e92d5c333b8368189c8e09c4e7aea7e7186967035242c6ee94bfa8f9cf19725d5e96",
+      "timelock": 1532177577,
+      "type": 2,
+    },
+    "id": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+    "txId": "37e2ffea404d5dd053e952a06182552c7b3a9d5ee672dd2501ebd0c868c9f215",
+    "value": "25000",
+  },
+}
+`;
+
 exports[`test parsing a spent coin output id 1`] = `
 CoinOutputInfo {
   "input": Object {
@@ -38,13 +66,23 @@ CoinOutputInfo {
     "blockId": "005eb62e4ff226d4cfa17b125352f85a61146b8b909804052d0cad2fde0c822b",
     "id": "3559a1efb6b2f14edd1c885d61068979e56dc66cd8861d98a9ba77e54453d434",
     "isBlockCreatorReward": true,
+    "unlockhash": "01bd7048f40168df7d837fd398bcffdf2d69d992ef53bd1677570d373ba378edea8a72317cf336",
     "value": "10",
   },
 }
 `;
 
-exports[`test parsing an unspent blockstake output id 1`] = `
+exports[`test parsing an spent blockstake output id 1`] = `
 BlockstakeOutputInfo {
+  "input": Object {
+    "fulfillment": SingleSignatureFulfillment {
+      "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
+      "signature": "cf0f67ec82fe4aa8531223a2f8522f5927537acb79516a3726c1636e9b540d3f1cdb9f79f08740d2f835d6f5f82a823e12c505d30c10ae4f53054742072c1509",
+      "type": 1,
+    },
+    "parentid": "603222de3b3e729950d6eccd9dfc4882e64cc48cb1147aa51f158afc6ddc9b1b",
+    "txId": "cc93a40764118c2546dc976ebe10d61b42f5ef9763ff75733075c777ce1f30dd",
+  },
   "output": Object {
     "condition": UnlockhashCondition {
       "type": 1,
@@ -77,6 +115,7 @@ CoinOutputInfo {
     "blockId": "6d298dc80f5b099399a0946997387b5326ded0502cda3e14df1999a87bfd17cb",
     "id": "f0bf7ede4bb6c38cf3199b8a1c3501ed48346bd926bf5bfe6c3a2dcadcfa4af9",
     "isBlockCreatorReward": true,
+    "unlockhash": "01e34588bee49b2cbd53f2198cd5022fbbe78aecb8125a39efb8699720b946e84ead718daf0cd6",
     "value": "10",
   },
 }

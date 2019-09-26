@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js'
 import { find, flatten } from 'lodash'
 import {
-  AtomicSwapCondition, Condition, MultisignatureCondition, NilCondition, TimelockCondition, UnlockhashCondition
+  AtomicSwapCondition, Condition, MultisignatureCondition, NilCondition, TimelockCondition, UnlockhashCondition, ConditionType
 } from './conditionTypes'
 import { AtomicSwapFulfillment, Fulfillment, KeyPair, MultisignatureFulfillment, SingleSignatureFulfillment } from './fulfillmentTypes'
 import {
@@ -341,13 +341,14 @@ export class Parser {
 
     const coinOutputs = rawtransaction.data.coinoutputs || []
     const coinOutputIds = tx.coinoutputids || []
+    const coinOutputUnlockhashes = tx.coinoutputunlockhashes || []
     const coinInputs = rawtransaction.data.coininputs || []
 
     transaction.blockstakeInputs = this.getInputs(bsInputs)
     transaction.blockstakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
 
     transaction.coinInputs = this.getInputs(coinInputs)
-    transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds)
+    transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
 
     // todo add arbitrary data and extension props
 
@@ -409,7 +410,8 @@ export class Parser {
             id: minerFee.id,
             value: minerFee.value,
             blockId: block.id,
-            isBlockCreatorReward: true
+            isBlockCreatorReward: true,
+            unlockhash: minerFee.unlockhash
           } as Output
         }
       })
@@ -469,12 +471,12 @@ export class Parser {
     return blockStakeOutputInfo
   }
 
-  private getOutputs (outputs: any, outputIds: any): Output[] {
+  private getOutputs (outputs: any, outputIds: any, coinOutputUnlockhashes: any): Output[] {
     return outputs.map((output: Output, index: number) => {
       return {
         id: outputIds[index],
         value: new Currency(output.value, this.precision),
-        condition: this.getCondition(output)
+        condition: this.getCondition(output, coinOutputUnlockhashes, index)
       }
     })
   }
@@ -504,7 +506,7 @@ export class Parser {
       return {
         id: outputIds[index],
         value: new Currency(output.value, 1),
-        condition: this.getCondition(output)
+        condition: this.getCondition(output, [], 0)
       }
     })
   }
@@ -528,7 +530,7 @@ export class Parser {
     })
   }
 
-  private getCondition (output: any): Condition {
+  private getCondition (output: any, coinOutputUnlockhashes: any, index: number): Condition {
     // If no condition object is present on the output we assume its a legacy condition
     // Legacy conditions are always single signature unlockhash conditions.
     if (!output.condition) {
@@ -537,13 +539,13 @@ export class Parser {
 
     const { data } = output.condition
     switch (output.condition.type) {
-      case 1:
+      case ConditionType.UnlockhashCondition:
         // TODO set value
         return new UnlockhashCondition(1, output.condition.data.unlockhash)
-      case 2:
-        const { sender, receiver, hashedSecret, timelock } = data
-        return new AtomicSwapCondition(2, sender, receiver, hashedSecret, timelock)
-      case 3:
+      case ConditionType.AtomicSwapCondition:
+        const { sender, receiver, hashedsecret, timelock } = data
+        return new AtomicSwapCondition(2, sender, receiver, coinOutputUnlockhashes[index], hashedsecret, timelock)
+      case ConditionType.TimelockCondition:
         let condition: MultisignatureCondition | UnlockhashCondition | NilCondition
         if (data.unlockhashes) {
           condition = new MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount)
@@ -553,7 +555,7 @@ export class Parser {
           return new UnlockhashCondition(1, output.unlockhash)
         }
         return new TimelockCondition(3, data.locktime, condition)
-      case 4:
+      case ConditionType.MultisignatureCondition:
         return new MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount)
       default:
         throw new Error('Condition is not recongnised on data')
