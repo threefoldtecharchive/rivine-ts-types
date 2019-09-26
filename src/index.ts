@@ -12,6 +12,7 @@ const nullId = '0000000000000000000000000000000000000000000000000000000000000000
 
 export class Parser {
   public precision: number = 9
+  private hash: string
 
   constructor (precision?: number) {
     // If a precision is provided, use this one
@@ -21,10 +22,15 @@ export class Parser {
 
     // Set precision
     this.precision = Math.pow(10, this.precision)
+
+    this.hash = ''
   }
 
   // Returns any because when we return a union type we can't set default values for them.
-  public ParseHashResponseJSON (res: any): any {
+  public ParseHashResponseJSON (res: any, hash: string): any {
+    // Save hash in state
+    this.hash = hash
+
     if (res.hashtype === 'unlockhash') {
       return this.parseWalletAddress(res)
     }
@@ -53,16 +59,14 @@ export class Parser {
     // If blocks field is populated then the address is probably the address of a blockcreator
     if (blocks) { return this.parseWalletForBlockCreator(blocks, transactions) }
 
-    const address = res.transactions[0].coinoutputunlockhashes[0]
-
     const { spentCoinOutputs, unspentCoinOutputs, availableBalance }
-      = this.findCoinOutputOutputAppearances(address, transactions)
-    const { availableBlockstakeBalance } = this.findBlockStakeOutputOutputAppearances(address, transactions)
+      = this.findCoinOutputOutputAppearances(this.hash, transactions)
+    const { availableBlockstakeBalance } = this.findBlockStakeOutputOutputAppearances(this.hash, transactions)
 
     const availableWalletCoinBalance = new Currency(availableBalance, this.precision)
     const availableWalletBlockStakeBalance = new Currency(availableBlockstakeBalance, this.precision)
 
-    const wallet = new Wallet(address, availableWalletCoinBalance, availableWalletBlockStakeBalance)
+    const wallet = new Wallet(this.hash, availableWalletCoinBalance, availableWalletBlockStakeBalance)
 
     // Set Transaction on wallet object
     wallet.transactions = res.transactions.map((tx: any) => this.parseTransaction(tx))
@@ -76,17 +80,15 @@ export class Parser {
   }
 
   private parseWalletForBlockCreator (blocks: any, transactions: any): Wallet {
-    const address = transactions[0].blockstakeunlockhashes[0]
-
     const { spentMinerPayouts, unspentMinerPayouts, availableBalance: availableMinerfeeBalance }
-      = this.findMinerPayoutAppearances(address, transactions, blocks)
+      = this.findMinerPayoutAppearances(this.hash, transactions, blocks)
     const { spentCoinOutputs, unspentCoinOutputs,lastCoinSpent, availableBalance: availableCoinBalance }
-      = this.findCoinOutputOutputAppearances(address, transactions)
+      = this.findCoinOutputOutputAppearances(this.hash, transactions)
     const {
       availableBlockstakeBalance, unspentBlockStakesOutputsBlockCreator,
       lastBsSpent, spentBlockStakesOutputsBlockCreator
     }
-      = this.findBlockStakeOutputOutputAppearances(address, transactions)
+      = this.findBlockStakeOutputOutputAppearances(this.hash, transactions)
 
     // Calculate total balance
     const totalAvailableBalance = availableMinerfeeBalance.plus(availableCoinBalance)
@@ -94,7 +96,7 @@ export class Parser {
 
     const availableWalletBlockStakeBalance = new Currency(availableBlockstakeBalance, 1)
 
-    const wallet = new Wallet(address, availableWalletCoinBalance, availableWalletBlockStakeBalance)
+    const wallet = new Wallet(this.hash, availableWalletCoinBalance, availableWalletBlockStakeBalance)
 
     // Set unspent minerpayouts
     wallet.minerPayouts = this.parseMinerPayoutsWallet(unspentMinerPayouts, false)
@@ -357,15 +359,12 @@ export class Parser {
     const { blocks, transactions } = res
     let parsedTransactions: Transaction[] = []
     let parsedBlocks: Block[] = []
-    let hash: string = ''
 
     if (transactions) {
-      hash = transactions[0].coinoutputids[0]
       parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
     }
 
     if (blocks) {
-      hash = blocks[0].minerpayoutids[0]
       parsedBlocks = blocks.map((block: Block) => this.parseBlock(block)) as Block[]
     }
 
@@ -379,7 +378,7 @@ export class Parser {
       if (coinOutputs) {
         // Only try finding output when there is none present, else it will override with undefined
         if (!coinOutput) {
-          coinOutput = find(coinOutputs, (co: Output) => co.id === hash) as Output
+          coinOutput = find(coinOutputs, (co: Output) => co.id === this.hash) as Output
           // If found set txid
           if (coinOutput) {
             coinOutput.txId = tx.id
@@ -391,7 +390,7 @@ export class Parser {
       if (coinInputs) {
         // If a coininput with parent id equal to the hash we are looking for is found that the output is spent
         if (!coinInput) {
-          coinInput = find(coinInputs, (co: Input) => co.parentid === hash) as Input
+          coinInput = find(coinInputs, (co: Input) => co.parentid === this.hash) as Input
           // If found set txid
           if (coinInput) {
             coinInput.txId = tx.id
@@ -404,7 +403,7 @@ export class Parser {
     // we now look inside the minerfees if we can find this output
     if (!coinOutput) {
       parsedBlocks.forEach((block: Block) => {
-        const minerFee = find(block.minerFees, (mf: MinerFee) => mf.id === hash) as MinerFee
+        const minerFee = find(block.minerFees, (mf: MinerFee) => mf.id === this.hash) as MinerFee
         if (minerFee) {
           coinOutput = {
             id: minerFee.id,
@@ -427,7 +426,8 @@ export class Parser {
   private parseBlockStakeOutput (res: any): BlockstakeOutputInfo | undefined {
     const { transactions } = res
 
-    const hash = transactions[0].blockstakeoutputids[0]
+    const hash = this.hash
+
     const parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
 
     let blockStakeOutput: any
@@ -440,7 +440,7 @@ export class Parser {
       if (blockstakeOutputs) {
         // Only try finding output when there is none present, else it will override with undefined
         if (!blockStakeOutput) {
-          blockStakeOutput = find(blockstakeOutputs, (co: Output) => co.id === hash) as Output
+          blockStakeOutput = find(blockstakeOutputs, (co: Output) => co.id === this.hash) as Output
           // If found set txid
           if (blockStakeOutput) {
             blockStakeOutput.txId = tx.id
@@ -452,7 +452,7 @@ export class Parser {
       if (blockstakeInputs) {
         // If a blockStakeInput with parent id equal to the hash we are looking for is found that the output is spent
         if (!blockStakeInput) {
-          blockStakeInput = find(blockstakeInputs, (co: Input) => co.parentid === hash) as Input
+          blockStakeInput = find(blockstakeInputs, (co: Input) => co.parentid === this.hash) as Input
           // If found set txid
           if (blockStakeInput) {
             blockStakeInput.txId = tx.id

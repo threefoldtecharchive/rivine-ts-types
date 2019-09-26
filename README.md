@@ -16,8 +16,13 @@ npm install rivine-ts-types
 ```javascipt
 import { Parser } from 'rivine-ts-types'
 
-const myParser = new Parser()
-const parsedResponse = myParser.ParseJSONResponse(response)
+const myParser = new Parser(precision)
+
+// In case explorer/hashes is called
+const parsedResponse = myParser.ParseHashResponseJSON(response, hash)
+
+// In case explorer/blocks is called
+const parsedResponse = myParser.ParseBlockResponseJSON(response)
 ```
 
 ## License
