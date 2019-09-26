@@ -8,6 +8,8 @@ import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes'
 
 test('test parsing block', () => {
+  const hash = '2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5'
+
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(blockidJSON) as Block
 
@@ -33,6 +35,7 @@ test('test parsing block', () => {
 })
 
 test('test parsing transaction', () => {
+  const hash = 'a759d010ec638cef7f06565f04f4d7c06d66ca4e02aa342ecce001d95135087e'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(transactionIdJSON) as Transaction
 
@@ -61,6 +64,7 @@ test('test parsing transaction', () => {
 })
 
 test('test parsing unlockhash', () => {
+  const hash = '0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unlockhash) as Wallet
 
@@ -83,6 +87,7 @@ test('test parsing unlockhash', () => {
 })
 
 test('test parsing unlockhash blockcreator', () => {
+  const hash = '015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unlockhashBlockCreator) as Wallet
 
@@ -108,6 +113,7 @@ test('test parsing unlockhash blockcreator', () => {
 })
 
 test('test parsing a spent coin output id', () => {
+  const hash = '6321aecd61aa7ae6d37e611a9e3d3eba898b752789df2b559dcca5b11429ca4b'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(coinoutputIdJSON) as CoinOutputInfo
 
@@ -119,6 +125,7 @@ test('test parsing a spent coin output id', () => {
 })
 
 test('test parsing an unspent coin output id', () => {
+  const hash = 'a428df56e77c40621333f2923f27e885702f1ba9a3dc52f41e97c0a4784fea64'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unspentCoinoutputIdJSON)
 
@@ -132,6 +139,7 @@ test('test parsing an unspent coin output id', () => {
 })
 
 test('test parsing a spent coin output id for blockcreator', () => {
+  const hash = '3559a1efb6b2f14edd1c885d61068979e56dc66cd8861d98a9ba77e54453d434'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(spentCoinOutputIdBlockCreatorJSON) as CoinOutputInfo
 
@@ -143,6 +151,7 @@ test('test parsing a spent coin output id for blockcreator', () => {
 })
 
 test('test parsing an unspent coin output id for blockcreator', () => {
+  const hash = 'f0bf7ede4bb6c38cf3199b8a1c3501ed48346bd926bf5bfe6c3a2dcadcfa4af9'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unspentCoinOutputIDBlockCreatorJSON) as CoinOutputInfo
 
@@ -158,6 +167,7 @@ test('test parsing an unspent coin output id for blockcreator', () => {
 })
 
 test('test parsing an unspent blockstake output id', () => {
+  const hash = '603222de3b3e729950d6eccd9dfc4882e64cc48cb1147aa51f158afc6ddc9b1b'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(unspentBlockStakeOutputIdJSON) as BlockstakeOutputInfo
 
