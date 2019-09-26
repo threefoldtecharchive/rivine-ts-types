@@ -24,36 +24,34 @@ export class Parser {
   }
 
   // Returns any because when we return a union type we can't set default values for them.
-  public ParseJSONResponse (res: any): any {
+  public ParseHashResponseJSON (res: any): any {
     if (res.hashtype === 'unlockhash') {
-      return this.ParseWalletAddress(res)
+      return this.parseWalletAddress(res)
     }
     if (res.hashtype === 'coinoutputid') {
-      return this.ParseCoinOutput(res)
+      return this.parseCoinOutput(res)
     }
     if (res.hashtype === 'blockstakeoutputid') {
-      return this.ParseBlockStakeOutput(res)
+      return this.parseBlockStakeOutput(res)
     }
     if (res.block && res.block.blockid !== nullId) {
-      return this.ParseBlock(res.block)
-    }
-    if (res.blocks) {
-      return res.blocks.map((block: Block) => this.ParseBlock(block))
-    }
-    if (res.transactions) {
-      return res.transactions.map((tx: Transaction) => this.ParseTransaction(tx))
+      return this.parseBlock(res.block)
     }
     if (res.transaction && res.transaction.id !== nullId) {
-      return this.ParseTransaction(res.transaction)
+      return this.parseTransaction(res.transaction)
     }
   }
 
-  public ParseWalletAddress (res: any): Wallet {
+  public ParseBlockResponseJSON (res: any): Block {
+    return this.parseBlock(res.block)
+  }
+
+  private parseWalletAddress (res: any): Wallet {
     const transactions = res.transactions
     const blocks = res.blocks
 
     // If blocks field is populated then the address is probably the address of a blockcreator
-    if (blocks) { return this.ParseWalletForBlockCreator(blocks, transactions) }
+    if (blocks) { return this.parseWalletForBlockCreator(blocks, transactions) }
 
     const address = res.transactions[0].coinoutputunlockhashes[0]
 
@@ -67,7 +65,7 @@ export class Parser {
     const wallet = new Wallet(address, availableWalletCoinBalance, availableWalletBlockStakeBalance)
 
     // Set Transaction on wallet object
-    wallet.transactions = res.transactions.map((tx: any) => this.ParseTransaction(tx))
+    wallet.transactions = res.transactions.map((tx: any) => this.parseTransaction(tx))
 
     // Set unspent coinoutputs on wallet object
     wallet.coinOutputs = this.parseCoinOutputsWallet(unspentCoinOutputs, false)
@@ -77,7 +75,7 @@ export class Parser {
     return wallet
   }
 
-  public ParseWalletForBlockCreator (blocks: any, transactions: any): Wallet {
+  private parseWalletForBlockCreator (blocks: any, transactions: any): Wallet {
     const address = transactions[0].blockstakeunlockhashes[0]
 
     const { spentMinerPayouts, unspentMinerPayouts, availableBalance: availableMinerfeeBalance }
@@ -126,7 +124,7 @@ export class Parser {
   }
 
   // findCoinOutputOutputAppearances finds the spent / unspent miner payouts for an address
-  public findMinerPayoutAppearances (address: string, transactions: any, blocks: any): any {
+  private findMinerPayoutAppearances (address: string, transactions: any, blocks: any): any {
     const spentMinerPayouts: any = []
 
     const unspentMinerPayouts = flatten(
@@ -171,7 +169,7 @@ export class Parser {
   }
 
   // findCoinOutputOutputAppearances finds the spent / unspent coin outputs for an address
-  public findCoinOutputOutputAppearances (address: string, transactions: any): any {
+  private findCoinOutputOutputAppearances (address: string, transactions: any): any {
     const spentCoinOutputs: any = []
 
     const unspentCoinOutputs = transactions
@@ -232,7 +230,7 @@ export class Parser {
   }
 
   // findBlockStakeOutputOutputAppearances finds the spent / unspent blockstake outputs for an address
-  public findBlockStakeOutputOutputAppearances (address: string, transactions: any): any {
+  private findBlockStakeOutputOutputAppearances (address: string, transactions: any): any {
     const spentBlockStakesOutputsBlockCreator: any = []
 
     const ucos = transactions
@@ -301,11 +299,11 @@ export class Parser {
       lastBsSpent, spentBlockStakesOutputsBlockCreator }
   }
 
-  public ParseBlock (block: any): Block {
+  private parseBlock (block: any): Block {
     const { blockid: id, height, transactions, rawblock, minerpayoutids } = block
     const { timestamp, minerpayouts } = rawblock
 
-    const parsedTransactions = transactions.map((tx: any) => this.ParseTransaction(tx, id, height, timestamp))
+    const parsedTransactions = transactions.map((tx: any) => this.parseTransaction(tx, id, height, timestamp))
     const parsedBlock = new Block(id, height, timestamp, parsedTransactions)
 
     if (minerpayouts.length > 0) {
@@ -320,7 +318,7 @@ export class Parser {
     return parsedBlock
   }
 
-  public ParseTransaction (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction {
+  private parseTransaction (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction {
     const { rawtransaction, id, unconfirmed } = tx
     const { version } = tx.rawtransaction
 
@@ -354,8 +352,8 @@ export class Parser {
     return transaction
   }
 
-  // ParseCoinOutput gets coinoutput information for a normal coin outputs and also for blockcreator coin outputs
-  public ParseCoinOutput (res: any): CoinOutputInfo | undefined {
+  // parseCoinOutput gets coinoutput information for a normal coin outputs and also for blockcreator coin outputs
+  private parseCoinOutput (res: any): CoinOutputInfo | undefined {
     const { blocks, transactions } = res
     let parsedTransactions: Transaction[] = []
     let parsedBlocks: Block[] = []
@@ -363,12 +361,12 @@ export class Parser {
 
     if (transactions) {
       hash = transactions[0].coinoutputids[0]
-      parsedTransactions = transactions.map((tx: Transaction) => this.ParseTransaction(tx))
+      parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
     }
 
     if (blocks) {
       hash = blocks[0].minerpayoutids[0]
-      parsedBlocks = blocks.map((block: Block) => this.ParseBlock(block)) as Block[]
+      parsedBlocks = blocks.map((block: Block) => this.parseBlock(block)) as Block[]
     }
 
     let coinOutput: any
@@ -426,11 +424,11 @@ export class Parser {
     return coinOutputInfo
   }
 
-  public ParseBlockStakeOutput (res: any): BlockstakeOutputInfo | undefined {
+  private parseBlockStakeOutput (res: any): BlockstakeOutputInfo | undefined {
     const { transactions } = res
 
     const hash = transactions[0].blockstakeoutputids[0]
-    const parsedTransactions = transactions.map((tx: Transaction) => this.ParseTransaction(tx))
+    const parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
 
     let blockStakeOutput: any
     let blockStakeInput: any
@@ -471,7 +469,7 @@ export class Parser {
     return blockStakeOutputInfo
   }
 
-  public getOutputs (outputs: any, outputIds: any): Output[] {
+  private getOutputs (outputs: any, outputIds: any): Output[] {
     return outputs.map((output: Output, index: number) => {
       return {
         id: outputIds[index],
@@ -481,7 +479,7 @@ export class Parser {
     })
   }
 
-  public parseCoinOutputsWallet (outputs: any, spent: boolean): Output[] {
+  private parseCoinOutputsWallet (outputs: any, spent: boolean): Output[] {
     return outputs.map((output: any) => {
       return {
         id: output.coinOutputId,
@@ -491,7 +489,7 @@ export class Parser {
     })
   }
 
-  public parseMinerPayoutsWallet (minerpayouts: any, spent: boolean): Output[] {
+  private parseMinerPayoutsWallet (minerpayouts: any, spent: boolean): Output[] {
     return minerpayouts.map((mp: any) => {
       return {
         id: mp.minerPayoutId,
@@ -501,7 +499,7 @@ export class Parser {
     })
   }
 
-  public getBlockstakeOutputs (outputs: any, outputIds: any): Output[] {
+  private getBlockstakeOutputs (outputs: any, outputIds: any): Output[] {
     return outputs.map((output: Output, index: number) => {
       return {
         id: outputIds[index],
@@ -511,7 +509,7 @@ export class Parser {
     })
   }
 
-  public parseBlockstakeOutputsWallet (outputs: any, spent: boolean): Output[] {
+  private parseBlockstakeOutputsWallet (outputs: any, spent: boolean): Output[] {
     return outputs.map((output: any, index: number) => {
       return {
         id: output.blockstakeOutputId,
@@ -521,7 +519,7 @@ export class Parser {
     })
   }
 
-  public getInputs (inputs: any): Input[] {
+  private getInputs (inputs: any): Input[] {
     return inputs.map((input: Input) => {
       return {
         parentid: input.parentid,
@@ -530,7 +528,7 @@ export class Parser {
     })
   }
 
-  public getCondition (output: any): Condition {
+  private getCondition (output: any): Condition {
     // If no condition object is present on the output we assume its a legacy condition
     // Legacy conditions are always single signature unlockhash conditions.
     if (!output.condition) {
@@ -562,7 +560,7 @@ export class Parser {
     }
   }
 
-  public getFulfillment (input: any): Fulfillment {
+  private getFulfillment (input: any): Fulfillment {
     // If unlocker object is present on the input, we assume its a legacy input.
     // Convert this legacy input to our current input type
     if (input.unlocker) {

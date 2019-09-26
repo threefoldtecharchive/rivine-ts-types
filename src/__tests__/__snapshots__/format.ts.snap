@@ -226,6 +226,53 @@ Block {
 }
 `;
 
+exports[`test parsing block from block response 1`] = `
+Block {
+  "height": 371498,
+  "id": "1220b86ae316865d6efe51211256041a9636984e74400dc5ab90700fdad6c179",
+  "minerFees": Array [
+    Object {
+      "id": "602a519615e374b5b11660660e48588bd47c89f8ee225fbb8f07b4b597a86fc6",
+      "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+      "value": "10",
+    },
+  ],
+  "timestamp": 1569481927,
+  "transactions": Array [
+    Transaction {
+      "blockHeight": 371498,
+      "blockId": "1220b86ae316865d6efe51211256041a9636984e74400dc5ab90700fdad6c179",
+      "blockTime": 1569481927,
+      "blockstakeInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
+            "signature": "ef972bdd313737ab928e477f86a835a3881ad125865404ee670b2ff53e8ea57489895101472b8b90a9968804b82bb79c503687a7467a014a5f48858cc7e06903",
+            "type": 1,
+          },
+          "parentid": "e107bda37b98c9d326eecee57726efef4bfd8979b47df81550ea05fa3ced788b",
+        },
+      ],
+      "blockstakeOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
+          },
+          "id": "2a2b7eaf655794d1d8c09809db45dd187d2a57eba7369d21be3d975d94e2f5bc",
+          "value": "900",
+        },
+      ],
+      "coinInputs": Array [],
+      "coinOutputs": Array [],
+      "id": "9451db702b440775db513a5343ce0ad084d3d44580002aa91d14257dfabb03c8",
+      "unconfirmed": false,
+      "version": 1,
+    },
+  ],
+}
+`;
+
 exports[`test parsing transaction 1`] = `
 Transaction {
   "blockHeight": undefined,

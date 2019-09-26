@@ -1,7 +1,7 @@
 import { Parser } from '../parser'
 import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
-  spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON
+  spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON
 } from '../testdata/data'
 import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
@@ -9,7 +9,7 @@ import { SingleSignatureFulfillment } from '../fulfillmentTypes'
 
 test('test parsing block', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(blockidJSON) as Block
+  const parsedResponse = parser.ParseHashResponseJSON(blockidJSON) as Block
 
   expect(parsedResponse instanceof Block)
   expect(parsedResponse.kind()).toBe(ResponseType.Block)
@@ -34,7 +34,7 @@ test('test parsing block', () => {
 
 test('test parsing transaction', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(transactionIdJSON) as Transaction
+  const parsedResponse = parser.ParseHashResponseJSON(transactionIdJSON) as Transaction
 
   expect(parsedResponse instanceof Transaction)
   expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
@@ -62,7 +62,7 @@ test('test parsing transaction', () => {
 
 test('test parsing unlockhash', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(unlockhash) as Wallet
+  const parsedResponse = parser.ParseHashResponseJSON(unlockhash) as Wallet
 
   expect(parsedResponse instanceof Wallet)
 
@@ -84,7 +84,7 @@ test('test parsing unlockhash', () => {
 
 test('test parsing unlockhash blockcreator', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(unlockhashBlockCreator) as Wallet
+  const parsedResponse = parser.ParseHashResponseJSON(unlockhashBlockCreator) as Wallet
 
   expect(parsedResponse instanceof Wallet)
 
@@ -109,7 +109,7 @@ test('test parsing unlockhash blockcreator', () => {
 
 test('test parsing a spent coin output id', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(coinoutputIdJSON) as CoinOutputInfo
+  const parsedResponse = parser.ParseHashResponseJSON(coinoutputIdJSON) as CoinOutputInfo
 
   expect(parsedResponse instanceof CoinOutputInfo)
   expect(parsedResponse.output).toBeTruthy()
@@ -120,7 +120,7 @@ test('test parsing a spent coin output id', () => {
 
 test('test parsing an unspent coin output id', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(unspentCoinoutputIdJSON)
+  const parsedResponse = parser.ParseHashResponseJSON(unspentCoinoutputIdJSON)
 
   expect(parsedResponse instanceof CoinOutputInfo)
   expect(parsedResponse.output).toBeTruthy()
@@ -133,7 +133,7 @@ test('test parsing an unspent coin output id', () => {
 
 test('test parsing a spent coin output id for blockcreator', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(spentCoinOutputIdBlockCreatorJSON) as CoinOutputInfo
+  const parsedResponse = parser.ParseHashResponseJSON(spentCoinOutputIdBlockCreatorJSON) as CoinOutputInfo
 
   expect(parsedResponse instanceof CoinOutputInfo)
   expect(parsedResponse.output).toBeTruthy()
@@ -144,7 +144,7 @@ test('test parsing a spent coin output id for blockcreator', () => {
 
 test('test parsing an unspent coin output id for blockcreator', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(unspentCoinOutputIDBlockCreatorJSON) as CoinOutputInfo
+  const parsedResponse = parser.ParseHashResponseJSON(unspentCoinOutputIDBlockCreatorJSON) as CoinOutputInfo
 
   expect(parsedResponse instanceof CoinOutputInfo)
   expect(parsedResponse.output).toBeTruthy()
@@ -159,7 +159,7 @@ test('test parsing an unspent coin output id for blockcreator', () => {
 
 test('test parsing an unspent blockstake output id', () => {
   const parser = new Parser()
-  const parsedResponse = parser.ParseJSONResponse(unspentBlockStakeOutputIdJSON) as BlockstakeOutputInfo
+  const parsedResponse = parser.ParseHashResponseJSON(unspentBlockStakeOutputIdJSON) as BlockstakeOutputInfo
 
   expect(parsedResponse instanceof BlockstakeOutputInfo)
   expect(parsedResponse.output).toBeTruthy()
@@ -167,5 +167,30 @@ test('test parsing an unspent blockstake output id', () => {
   // // Since its unspent, no input will be found
   expect(parsedResponse.input).toBeUndefined()
 
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing block from block response', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseBlockResponseJSON(blockResponseJSON)
+
+  expect(parsedResponse instanceof Block)
+  expect(parsedResponse.kind()).toBe(ResponseType.Block)
+
+  const expectedBlockId = '1220b86ae316865d6efe51211256041a9636984e74400dc5ab90700fdad6c179'
+
+  expect(parsedResponse.id).toBe(expectedBlockId)
+  expect(parsedResponse.height).toBe(371498)
+  expect(parsedResponse.timestamp).toBe(1569481927)
+
+  expect(parsedResponse.transactions.length).toBe(1)
+
+  const firstTx = first(parsedResponse.transactions)
+  expect(firstTx instanceof Transaction)
+  if (firstTx) {
+    expect(firstTx.blockId).toBe(expectedBlockId)
+  }
+
+  // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()
 })
