@@ -610,7 +610,8 @@ export class Parser {
       case ConditionType.TimelockCondition:
         let condition: MultisignatureCondition | UnlockhashCondition | NilCondition
         if (data.unlockhashes) {
-          condition = new MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount)
+          condition =
+            new MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount, coinOutputUnlockhashes[index])
         } else if (data.unlockhash) {
           condition = new UnlockhashCondition(1, output.condition.data.unlockhash)
         } else {
@@ -618,7 +619,8 @@ export class Parser {
         }
         return new TimelockCondition(3, data.locktime, condition)
       case ConditionType.MultisignatureCondition:
-        return new MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount)
+        return new
+          MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount, coinOutputUnlockhashes[index])
       default:
         throw new Error('Condition is not recongnised on data')
     }

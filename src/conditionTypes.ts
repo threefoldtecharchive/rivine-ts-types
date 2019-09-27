@@ -81,11 +81,13 @@ export class TimelockCondition extends Condition {
 export class MultisignatureCondition extends Condition {
   public unlockhashes: string[]
   public signatureCount: number
+  public multisigAddress: string
 
-  constructor (type: number, unlockhashes: string[], signatureCount: number) {
+  constructor (type: number, unlockhashes: string[], signatureCount: number, multisigAddress: string) {
     super(type)
     this.unlockhashes = unlockhashes
     this.signatureCount = signatureCount
+    this.multisigAddress = multisigAddress
   }
 
   public getConditionType (): number {

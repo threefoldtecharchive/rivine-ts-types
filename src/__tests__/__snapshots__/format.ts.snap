@@ -234,6 +234,7 @@ Block {
       "coinOutputs": Array [
         Object {
           "condition": MultisignatureCondition {
+            "multisigAddress": "03e338203f19f1f1470287f52ae84f4644b989491b8a59d5eec3d3d38cf1021c87fb0f5cf914c3",
             "signatureCount": 2,
             "type": 4,
             "unlockhashes": Array [
@@ -292,6 +293,7 @@ Block {
         },
         Object {
           "condition": MultisignatureCondition {
+            "multisigAddress": "03e338203f19f1f1470287f52ae84f4644b989491b8a59d5eec3d3d38cf1021c87fb0f5cf914c3",
             "signatureCount": 2,
             "type": 4,
             "unlockhashes": Array [
