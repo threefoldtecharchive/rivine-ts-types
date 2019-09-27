@@ -14,11 +14,7 @@ export abstract class Condition {
     this.type = type
   }
 
-  public getConditionType (): number {
-    return this.type
-  }
-
-  public abstract getConditionTypeAsString (): number
+  public abstract getConditionType (): number
 }
 
 export class NilCondition extends Condition {
@@ -26,7 +22,7 @@ export class NilCondition extends Condition {
     super(type)
   }
 
-  public getConditionTypeAsString (): number {
+  public getConditionType (): number {
     return ConditionType.NilCondition
   }
 }
@@ -39,7 +35,7 @@ export class UnlockhashCondition extends Condition {
     this.unlockhash = unlockhash
   }
 
-  public getConditionTypeAsString (): number {
+  public getConditionType (): number {
     return ConditionType.UnlockhashCondition
   }
 }
@@ -61,7 +57,7 @@ export class AtomicSwapCondition extends Condition {
     this.timelock = timelock
   }
 
-  public getConditionTypeAsString (): number {
+  public getConditionType (): number {
     return ConditionType.AtomicSwapCondition
   }
 }
@@ -77,7 +73,7 @@ export class TimelockCondition extends Condition {
     this.condition = condition
   }
 
-  public getConditionTypeAsString (): number {
+  public getConditionType (): number {
     return ConditionType.TimelockCondition
   }
 }
@@ -92,7 +88,7 @@ export class MultisignatureCondition extends Condition {
     this.signatureCount = signatureCount
   }
 
-  public getConditionTypeAsString (): number {
+  public getConditionType (): number {
     return ConditionType.MultisignatureCondition
   }
 }

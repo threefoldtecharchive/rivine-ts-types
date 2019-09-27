@@ -2,12 +2,13 @@ import { Parser } from '../'
 import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
   spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
-  spentAtomicSwapCoinOutputId
+  spentAtomicSwapCoinOutputId, mintingTransactionJSON
 } from '../testdata/data'
-import { Block, Transaction, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
+import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes'
 import { ConditionType } from '../conditionTypes'
+import { DefaultTransaction } from '../transactionTypes'
 
 test('test parsing block', () => {
   const hash = '2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5'
@@ -26,7 +27,7 @@ test('test parsing block', () => {
   expect(parsedResponse.transactions.length).toBe(3)
 
   const firstTx = first(parsedResponse.transactions)
-  expect(firstTx instanceof Transaction)
+  expect(firstTx instanceof DefaultTransaction)
   if (firstTx) {
     expect(firstTx.blockId).toBe(expectedBlockId)
   }
@@ -38,18 +39,18 @@ test('test parsing block', () => {
 test('test parsing transaction', () => {
   const hash = 'a759d010ec638cef7f06565f04f4d7c06d66ca4e02aa342ecce001d95135087e'
   const parser = new Parser()
-  const parsedResponse = parser.ParseHashResponseJSON(transactionIdJSON, hash) as Transaction
+  const parsedResponse = parser.ParseHashResponseJSON(transactionIdJSON, hash) as DefaultTransaction
 
-  expect(parsedResponse instanceof Transaction)
+  expect(parsedResponse instanceof DefaultTransaction)
   expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
 
   expect(parsedResponse.id).toBe('a759d010ec638cef7f06565f04f4d7c06d66ca4e02aa342ecce001d95135087e')
   expect(parsedResponse.unconfirmed).toBe(false)
   expect(parsedResponse.version).toBe(1)
 
-  if (parsedResponse.blockstakeInputs) {
-    expect(parsedResponse.blockstakeInputs.length).toBe(1)
-    const firstBsInput = first(parsedResponse.blockstakeInputs)
+  if (parsedResponse.blockStakeInputs) {
+    expect(parsedResponse.blockStakeInputs.length).toBe(1)
+    const firstBsInput = first(parsedResponse.blockStakeInputs)
     if (firstBsInput) {
       expect(firstBsInput.parentid).toBe('90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0')
       expect(firstBsInput instanceof SingleSignatureFulfillment)
@@ -212,7 +213,7 @@ test('test parsing block from block response', () => {
   expect(parsedResponse.transactions.length).toBe(1)
 
   const firstTx = first(parsedResponse.transactions)
-  expect(firstTx instanceof Transaction)
+  expect(firstTx instanceof DefaultTransaction)
   if (firstTx) {
     expect(firstTx.blockId).toBe(expectedBlockId)
   }
@@ -220,3 +221,32 @@ test('test parsing block from block response', () => {
   // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()
 })
+
+// test.only('test parsing a minting transaction', () => {
+//   const hash = '589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b'
+//   const parser = new Parser()
+//   const parsedResponse = parser.ParseHashResponseJSON(mintingTransactionJSON, hash) as Transaction
+
+//   expect(parsedResponse instanceof Transaction)
+//   expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
+
+//   expect(parsedResponse.id).toBe('589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b')
+//   expect(parsedResponse.unconfirmed).toBe(false)
+//   console.log(parsedResponse)
+
+//   // if (parsedResponse.blockstakeInputs) {
+//   //   expect(parsedResponse.blockstakeInputs.length).toBe(1)
+//   //   const firstBsInput = first(parsedResponse.blockstakeInputs)
+//   //   if (firstBsInput) {
+//   //     expect(firstBsInput.parentid).toBe('90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0')
+//   //     expect(firstBsInput instanceof SingleSignatureFulfillment)
+//   //     expect(firstBsInput.fulfillment.getFulfillmentTypeAsString()).toBe('Single Signature Fulfillment')
+
+//   //     const singleSigFulfillment = firstBsInput.fulfillment as SingleSignatureFulfillment
+//   //     expect(singleSigFulfillment.publicKey).toBe('ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b')
+//   //   }
+//   // }
+
+//   // Check if everything else is correct
+//   // expect(parsedResponse).toMatchSnapshot()
+// })

@@ -5,8 +5,9 @@ import {
 } from './conditionTypes'
 import { AtomicSwapFulfillment, Fulfillment, KeyPair, MultisignatureFulfillment, SingleSignatureFulfillment } from './fulfillmentTypes'
 import {
-  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input, LastSpent, MinerFee, Output, Transaction, Wallet
+  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input, LastSpent, MinerFee, Output, Wallet
 } from './types'
+import { Transaction, DefaultTransaction, CoinCreationTransaction, MinterDefinitionTransaction } from './transactionTypes'
 
 const nullId = '0000000000000000000000000000000000000000000000000000000000000000'
 
@@ -320,20 +321,27 @@ export class Parser {
     return parsedBlock
   }
 
-  private parseTransaction (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction {
+  private parseTransaction
+  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction | undefined {
+    const { version } = tx.rawtransaction
+    switch (version) {
+      case 0:
+        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
+      case 1:
+        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
+      // case 128:
+      //   return this.parseMinterDefinitionTransaction()
+      // case 129:
+      //   return this.parseCoinCreationTransaction()
+      default:
+        return
+    }
+  }
+
+  private parseCoinOrBlockStakeTransaction
+  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction {
     const { rawtransaction, id, unconfirmed } = tx
     const { version } = tx.rawtransaction
-
-    // Create the Transaction
-    const transaction = new Transaction(version)
-
-    // Set blockConstants
-    transaction.blockId = blockId
-    transaction.blockHeight = blockHeight
-    transaction.blockTime = blockTime
-
-    transaction.id = id
-    transaction.unconfirmed = unconfirmed
 
     const bsOutputs = rawtransaction.data.blockstakeoutputs || []
     const bsOutputIds = tx.blockstakeoutputids || []
@@ -344,13 +352,23 @@ export class Parser {
     const coinOutputUnlockhashes = tx.coinoutputunlockhashes || []
     const coinInputs = rawtransaction.data.coininputs || []
 
-    transaction.blockstakeInputs = this.getInputs(bsInputs)
-    transaction.blockstakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
+    // todo add arbitrary data and extension props
+
+    let transaction: DefaultTransaction = new DefaultTransaction(version)
+
+    transaction.blockStakeInputs = this.getInputs(bsInputs)
+    transaction.blockStakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
 
     transaction.coinInputs = this.getInputs(coinInputs)
     transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
 
-    // todo add arbitrary data and extension props
+    // Set blockConstants
+    transaction.blockId = blockId
+    transaction.blockHeight = blockHeight
+    transaction.blockTime = blockTime
+
+    transaction.id = id
+    transaction.unconfirmed = unconfirmed
 
     return transaction
   }
@@ -362,17 +380,18 @@ export class Parser {
     let parsedBlocks: Block[] = []
 
     if (transactions) {
-      parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
+      parsedTransactions = transactions.map((tx: DefaultTransaction) => this.parseTransaction(tx))
     }
 
     if (blocks) {
       parsedBlocks = blocks.map((block: Block) => this.parseBlock(block)) as Block[]
     }
 
+
     let coinOutput: any
     let coinInput: any
 
-    parsedTransactions.forEach((tx: Transaction) => {
+    parsedTransactions.forEach((tx: any) => {
       const { coinOutputs, coinInputs } = tx
 
       // If coinoutputs are defined, start looking for the coinoutput that matches our hash
@@ -428,21 +447,19 @@ export class Parser {
   private parseBlockStakeOutput (res: any): BlockstakeOutputInfo | undefined {
     const { transactions } = res
 
-    const hash = this.hash
-
-    const parsedTransactions = transactions.map((tx: Transaction) => this.parseTransaction(tx))
+    const parsedTransactions = transactions.map((tx: DefaultTransaction) => this.parseTransaction(tx))
 
     let blockStakeOutput: any
     let blockStakeInput: any
 
-    parsedTransactions.forEach((tx: Transaction) => {
-      const { blockstakeOutputs, blockstakeInputs } = tx
+    parsedTransactions.forEach((tx: DefaultTransaction) => {
+      const { blockStakeOutputs, blockStakeInputs } = tx
 
       // If blockStakeOutputs are defined, start looking for the blockStakeOutput that matches our hash
-      if (blockstakeOutputs) {
+      if (blockStakeOutputs) {
         // Only try finding output when there is none present, else it will override with undefined
         if (!blockStakeOutput) {
-          blockStakeOutput = find(blockstakeOutputs, (co: Output) => co.id === this.hash) as Output
+          blockStakeOutput = find(blockStakeOutputs, (co: Output) => co.id === this.hash) as Output
           // If found set txid
           if (blockStakeOutput) {
             blockStakeOutput.txId = tx.id
@@ -451,10 +468,10 @@ export class Parser {
       }
 
       // If blockStakeInputs are defined, start looking for the blockStakeInput that matches our hash
-      if (blockstakeInputs) {
+      if (blockStakeInputs) {
         // If a blockStakeInput with parent id equal to the hash we are looking for is found that the output is spent
         if (!blockStakeInput) {
-          blockStakeInput = find(blockstakeInputs, (co: Input) => co.parentid === this.hash) as Input
+          blockStakeInput = find(blockStakeInputs, (co: Input) => co.parentid === this.hash) as Input
           // If found set txid
           if (blockStakeInput) {
             blockStakeInput.txId = tx.id

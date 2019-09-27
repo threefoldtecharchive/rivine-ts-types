@@ -1,6 +1,7 @@
 import { Decimal } from 'decimal.js'
 import { Condition } from './conditionTypes'
 import { Fulfillment } from './fulfillmentTypes'
+import { Transaction } from './transactionTypes'
 
 export enum ResponseType {
   Block,
@@ -31,34 +32,6 @@ export class Block extends Response {
 
   public kind (): number {
     return ResponseType.Block
-  }
-}
-
-export class Transaction extends Response {
-  public version: number
-  public id?: string
-
-  // Optional block fields
-  public blockId?: string
-  public blockHeight?: number
-  public blockTime?: number
-
-  public coinInputs?: Input[]
-  public coinOutputs?: Output[]
-  public blockstakeInputs?: Input[]
-  public blockstakeOutputs?: Output[]
-
-  public extensionProperties?: Map<string, string>
-  public arbitraryData?: string
-  public unconfirmed?: boolean
-
-  constructor (version: number) {
-    super()
-    this.version = version
-  }
-
-  public kind (): number {
-    return ResponseType.Transaction
   }
 }
 

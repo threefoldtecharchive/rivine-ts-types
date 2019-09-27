@@ -139,11 +139,10 @@ Block {
   ],
   "timestamp": 1568963542,
   "transactions": Array [
-    Transaction {
+    DefaultTransaction {
       "blockHeight": 367184,
       "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
-      "blockTime": 1568963542,
-      "blockstakeInputs": Array [
+      "blockStakeInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
             "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
@@ -153,7 +152,7 @@ Block {
           "parentid": "6402109ebc0a7aca37c63ce45b13e96c2f40104ed6ced65859b87354a451a673",
         },
       ],
-      "blockstakeOutputs": Array [
+      "blockStakeOutputs": Array [
         Object {
           "condition": UnlockhashCondition {
             "type": 1,
@@ -163,18 +162,19 @@ Block {
           "value": "900",
         },
       ],
+      "blockTime": 1568963542,
       "coinInputs": Array [],
       "coinOutputs": Array [],
       "id": "3fd24cc322f16a019810f92e2eb2b9b9c7e3b074e6bfcf1c044cce0a74ded5f3",
       "unconfirmed": false,
       "version": 1,
     },
-    Transaction {
+    DefaultTransaction {
       "blockHeight": 367184,
       "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
       "blockTime": 1568963542,
-      "blockstakeInputs": Array [],
-      "blockstakeOutputs": Array [],
       "coinInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
@@ -211,12 +211,12 @@ Block {
       "unconfirmed": false,
       "version": 1,
     },
-    Transaction {
+    DefaultTransaction {
       "blockHeight": 367184,
       "blockId": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
       "blockTime": 1568963542,
-      "blockstakeInputs": Array [],
-      "blockstakeOutputs": Array [],
       "coinInputs": Array [
         Object {
           "fulfillment": MultisignatureFulfillment {
@@ -278,11 +278,10 @@ Block {
   ],
   "timestamp": 1569481927,
   "transactions": Array [
-    Transaction {
+    DefaultTransaction {
       "blockHeight": 371498,
       "blockId": "1220b86ae316865d6efe51211256041a9636984e74400dc5ab90700fdad6c179",
-      "blockTime": 1569481927,
-      "blockstakeInputs": Array [
+      "blockStakeInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
             "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
@@ -292,7 +291,7 @@ Block {
           "parentid": "e107bda37b98c9d326eecee57726efef4bfd8979b47df81550ea05fa3ced788b",
         },
       ],
-      "blockstakeOutputs": Array [
+      "blockStakeOutputs": Array [
         Object {
           "condition": UnlockhashCondition {
             "type": 1,
@@ -302,6 +301,7 @@ Block {
           "value": "900",
         },
       ],
+      "blockTime": 1569481927,
       "coinInputs": Array [],
       "coinOutputs": Array [],
       "id": "9451db702b440775db513a5343ce0ad084d3d44580002aa91d14257dfabb03c8",
@@ -313,11 +313,10 @@ Block {
 `;
 
 exports[`test parsing transaction 1`] = `
-Transaction {
+DefaultTransaction {
   "blockHeight": undefined,
   "blockId": undefined,
-  "blockTime": undefined,
-  "blockstakeInputs": Array [
+  "blockStakeInputs": Array [
     Object {
       "fulfillment": SingleSignatureFulfillment {
         "publicKey": "ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b",
@@ -327,7 +326,7 @@ Transaction {
       "parentid": "90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0",
     },
   ],
-  "blockstakeOutputs": Array [
+  "blockStakeOutputs": Array [
     Object {
       "condition": UnlockhashCondition {
         "type": 1,
@@ -337,6 +336,7 @@ Transaction {
       "value": "1000",
     },
   ],
+  "blockTime": undefined,
   "coinInputs": Array [],
   "coinOutputs": Array [],
   "id": "a759d010ec638cef7f06565f04f4d7c06d66ca4e02aa342ecce001d95135087e",
@@ -369,12 +369,12 @@ Wallet {
   "confirmedCoinBalance": "900",
   "isBlockCreator": false,
   "transactions": Array [
-    Transaction {
+    DefaultTransaction {
       "blockHeight": undefined,
       "blockId": undefined,
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
       "blockTime": undefined,
-      "blockstakeInputs": Array [],
-      "blockstakeOutputs": Array [],
       "coinInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
@@ -407,12 +407,12 @@ Wallet {
       "unconfirmed": false,
       "version": 1,
     },
-    Transaction {
+    DefaultTransaction {
       "blockHeight": undefined,
       "blockId": undefined,
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
       "blockTime": undefined,
-      "blockstakeInputs": Array [],
-      "blockstakeOutputs": Array [],
       "coinInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
@@ -445,12 +445,12 @@ Wallet {
       "unconfirmed": false,
       "version": 1,
     },
-    Transaction {
+    DefaultTransaction {
       "blockHeight": undefined,
       "blockId": undefined,
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
       "blockTime": undefined,
-      "blockstakeInputs": Array [],
-      "blockstakeOutputs": Array [],
       "coinInputs": Array [
         Object {
           "fulfillment": SingleSignatureFulfillment {
