@@ -1,7 +1,8 @@
 import Decimal from 'decimal.js'
 import { find, flatten } from 'lodash'
 import {
-  AtomicSwapCondition, Condition, MultisignatureCondition, NilCondition, TimelockCondition, UnlockhashCondition, ConditionType
+  AtomicSwapCondition, Condition, MultisignatureCondition,
+  NilCondition, TimelockCondition, UnlockhashCondition, ConditionType
 } from './conditionTypes'
 import { AtomicSwapFulfillment, Fulfillment, KeyPair, MultisignatureFulfillment, SingleSignatureFulfillment } from './fulfillmentTypes'
 import {
