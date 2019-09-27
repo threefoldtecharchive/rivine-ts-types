@@ -329,10 +329,10 @@ export class Parser {
         return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
       case 1:
         return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
-      // case 128:
-      //   return this.parseMinterDefinitionTransaction()
-      // case 129:
-      //   return this.parseCoinCreationTransaction()
+      case 128:
+        return this.parseMinterDefinitionTransaction(tx, blockId, blockHeight, blockTime)
+      case 129:
+        return this.parseCoinCreationTransaction(tx, blockId, blockHeight, blockTime)
       default:
         return
     }
@@ -361,6 +361,50 @@ export class Parser {
 
     transaction.coinInputs = this.getInputs(coinInputs)
     transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
+
+    // Set blockConstants
+    transaction.blockId = blockId
+    transaction.blockHeight = blockHeight
+    transaction.blockTime = blockTime
+
+    transaction.id = id
+    transaction.unconfirmed = unconfirmed
+
+    return transaction
+  }
+
+  private parseMinterDefinitionTransaction
+  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): MinterDefinitionTransaction {
+    const { rawtransaction, id, unconfirmed } = tx
+    const { data, version } = rawtransaction
+
+    const { mintfulfillment, mintcondition } = data
+    const parsedMintFulfillment = this.getFulfillment({ fulfillment: mintfulfillment })
+    const parsedMintCondition = this.getCondition({ condition: mintcondition }, [], 0)
+    const transaction = new MinterDefinitionTransaction(version, parsedMintFulfillment, parsedMintCondition)
+
+    // Set blockConstants
+    transaction.blockId = blockId
+    transaction.blockHeight = blockHeight
+    transaction.blockTime = blockTime
+
+    transaction.id = id
+    transaction.unconfirmed = unconfirmed
+
+    return transaction
+  }
+
+  private parseCoinCreationTransaction
+  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): CoinCreationTransaction {
+    const { rawtransaction, id, unconfirmed, coinoutputids, coinoutputunlockhashes } = tx
+    const { data, version } = rawtransaction
+
+    const { mintfulfillment, coinoutputs } = data
+
+    const parsedMintFulfillment = this.getFulfillment({ fulfillment: mintfulfillment })
+    const parsedOutputs = this.getOutputs(coinoutputs, coinoutputids, coinoutputunlockhashes)
+
+    const transaction = new CoinCreationTransaction(version, parsedMintFulfillment, parsedOutputs)
 
     // Set blockConstants
     transaction.blockId = blockId

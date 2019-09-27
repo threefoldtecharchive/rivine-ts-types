@@ -2,13 +2,13 @@ import { Parser } from '../'
 import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
   spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
-  spentAtomicSwapCoinOutputId, mintingTransactionJSON
+  spentAtomicSwapCoinOutputId, coinCreationTransactionJSON, minterDefinitionTransactionJSON
 } from '../testdata/data'
 import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
 import { SingleSignatureFulfillment } from '../fulfillmentTypes'
 import { ConditionType } from '../conditionTypes'
-import { DefaultTransaction } from '../transactionTypes'
+import { DefaultTransaction, MinterDefinitionTransaction, CoinCreationTransaction } from '../transactionTypes'
 
 test('test parsing block', () => {
   const hash = '2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5'
@@ -222,31 +222,40 @@ test('test parsing block from block response', () => {
   expect(parsedResponse).toMatchSnapshot()
 })
 
-// test.only('test parsing a minting transaction', () => {
-//   const hash = '589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b'
-//   const parser = new Parser()
-//   const parsedResponse = parser.ParseHashResponseJSON(mintingTransactionJSON, hash) as Transaction
+test('test parsing a minting transaction', () => {
+  const hash = '88fa9fa6f27693c11805c4a7d9272d7c3b299f0707aca7a887af24c002245b7e'
+  const parser = new Parser()
+  const parsedResponse
+    = parser.ParseHashResponseJSON(minterDefinitionTransactionJSON, hash) as MinterDefinitionTransaction
 
-//   expect(parsedResponse instanceof Transaction)
-//   expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
+  expect(parsedResponse instanceof MinterDefinitionTransaction)
+  expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
 
-//   expect(parsedResponse.id).toBe('589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b')
-//   expect(parsedResponse.unconfirmed).toBe(false)
-//   console.log(parsedResponse)
+  expect(parsedResponse.id).toBe('88fa9fa6f27693c11805c4a7d9272d7c3b299f0707aca7a887af24c002245b7e')
+  expect(parsedResponse.unconfirmed).toBe(false)
 
-//   // if (parsedResponse.blockstakeInputs) {
-//   //   expect(parsedResponse.blockstakeInputs.length).toBe(1)
-//   //   const firstBsInput = first(parsedResponse.blockstakeInputs)
-//   //   if (firstBsInput) {
-//   //     expect(firstBsInput.parentid).toBe('90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0')
-//   //     expect(firstBsInput instanceof SingleSignatureFulfillment)
-//   //     expect(firstBsInput.fulfillment.getFulfillmentTypeAsString()).toBe('Single Signature Fulfillment')
+  expect(parsedResponse.minterDefinitionCondition).toBeTruthy()
+  expect(parsedResponse.minterDefinitionFulfillment).toBeTruthy()
 
-//   //     const singleSigFulfillment = firstBsInput.fulfillment as SingleSignatureFulfillment
-//   //     expect(singleSigFulfillment.publicKey).toBe('ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b')
-//   //   }
-//   // }
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})
 
-//   // Check if everything else is correct
-//   // expect(parsedResponse).toMatchSnapshot()
-// })
+test('test parsing a minting transaction', () => {
+  const hash = '589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b'
+  const parser = new Parser()
+  const parsedResponse
+    = parser.ParseHashResponseJSON(coinCreationTransactionJSON, hash) as CoinCreationTransaction
+
+  expect(parsedResponse instanceof CoinCreationTransaction)
+  expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
+
+  expect(parsedResponse.id).toBe('589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b')
+  expect(parsedResponse.unconfirmed).toBe(false)
+
+  expect(parsedResponse.coinCreationFulfillment).toBeTruthy()
+  expect(parsedResponse.coinCreationOutputs).toBeTruthy()
+
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})

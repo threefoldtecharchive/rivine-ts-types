@@ -1,5 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`test parsing a minting transaction 1`] = `
+MinterDefinitionTransaction {
+  "blockHeight": undefined,
+  "blockId": undefined,
+  "blockTime": undefined,
+  "id": "88fa9fa6f27693c11805c4a7d9272d7c3b299f0707aca7a887af24c002245b7e",
+  "minterDefinitionCondition": UnlockhashCondition {
+    "type": 1,
+    "unlockhash": "01370af706b547dd4e562a047e6265d7e7750771f9bff633b1a12dbd59b11712c6ef65edb1690d",
+  },
+  "minterDefinitionFulfillment": SingleSignatureFulfillment {
+    "publicKey": "ed25519:d285f92d6d449d9abb27f4c6cf82713cec0696d62b8c123f1627e054dc6d7780",
+    "signature": "f1ac9601b255b251d76e1629e6f659e35b42539faecb7c041cb42ac678e1a52594170e3664f9e2515c703af143b3609c1f01c1bf4c5ae49a0b5a2cf2f751d60d",
+    "type": 1,
+  },
+  "unconfirmed": false,
+  "version": 128,
+}
+`;
+
+exports[`test parsing a minting transaction 2`] = `
+CoinCreationTransaction {
+  "blockHeight": undefined,
+  "blockId": undefined,
+  "blockTime": undefined,
+  "coinCreationFulfillment": SingleSignatureFulfillment {
+    "publicKey": "ed25519:d285f92d6d449d9abb27f4c6cf82713cec0696d62b8c123f1627e054dc6d7780",
+    "signature": "bcbb65c9bff884962548063fdfd0003d5a4ee166de3b33fa60baf066ebb5c8f4afe7af6320722726077d6f84045c617352d584c18f1325ca3d9bdd2e6f3c1d0e",
+    "type": 1,
+  },
+  "coinCreationOutputs": Array [
+    Object {
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "01f68299b26a89efdb4351a61c3a062321d23edbc1399c8499947c1313375609adbbcd3977363c",
+      },
+      "id": "eb645b0bb8d43e376c766a51ac2e77593f791752f4255dc2c73587d7225f2495",
+      "value": "100",
+    },
+  ],
+  "id": "589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b",
+  "unconfirmed": false,
+  "version": 129,
+}
+`;
+
 exports[`test parsing a spent atomic swap coin output id 1`] = `
 CoinOutputInfo {
   "input": Object {
