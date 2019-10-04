@@ -307,7 +307,7 @@ export class Parser {
     const { blockid: id, height, transactions, rawblock, minerpayoutids } = block
     const { timestamp, minerpayouts } = rawblock
 
-    const parsedTransactions = transactions.map((tx: any) => this.parseTransaction(tx, id, height, timestamp))
+    const parsedTransactions = transactions.map((tx: any) => this.parseTransaction(tx, id, timestamp))
     const parsedBlock = new Block(id, height, timestamp, parsedTransactions)
 
     if (minerpayouts.length > 0) {
@@ -323,25 +323,25 @@ export class Parser {
   }
 
   private parseTransaction
-  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction | undefined {
+  (tx: any, blockId?: string, blockTime?: number): Transaction | undefined {
     const { version } = tx.rawtransaction
     switch (version) {
       case 0:
-        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
+        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockTime)
       case 1:
-        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockHeight, blockTime)
+        return this.parseCoinOrBlockStakeTransaction(tx, blockId, blockTime)
       case 128:
-        return this.parseMinterDefinitionTransaction(tx, blockId, blockHeight, blockTime)
+        return this.parseMinterDefinitionTransaction(tx, blockId, blockTime)
       case 129:
-        return this.parseCoinCreationTransaction(tx, blockId, blockHeight, blockTime)
+        return this.parseCoinCreationTransaction(tx, blockId, blockTime)
       default:
         return
     }
   }
 
   private parseCoinOrBlockStakeTransaction
-  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): Transaction {
-    const { rawtransaction, id, unconfirmed } = tx
+  (tx: any, blockId?: string, blockTime?: number): Transaction {
+    const { rawtransaction, id, unconfirmed, coininputoutputs, height } = tx
     const { version } = tx.rawtransaction
 
     const bsOutputs = rawtransaction.data.blockstakeoutputs || []
@@ -358,14 +358,16 @@ export class Parser {
     let transaction: DefaultTransaction = new DefaultTransaction(version)
 
     transaction.blockStakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
-    transaction.blockStakeInputs = this.getInputs(bsInputs, transaction.blockStakeOutputs)
+    const blockStakeInputsOutputs = this.getBlockstakeOutputs(coininputoutputs, bsOutputIds)
+    transaction.blockStakeInputs = this.getInputs(bsInputs, blockStakeInputsOutputs)
 
     transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
-    transaction.coinInputs = this.getInputs(coinInputs, transaction.coinOutputs)
+    const coinInputsOutputs = this.getOutputs(coininputoutputs, coinOutputIds, coinOutputUnlockhashes)
+    transaction.coinInputs = this.getInputs(coinInputs, coinInputsOutputs)
 
     // Set blockConstants
     transaction.blockId = blockId
-    transaction.blockHeight = blockHeight
+    transaction.blockHeight = height
     transaction.blockTime = blockTime
 
     transaction.id = id
@@ -375,8 +377,8 @@ export class Parser {
   }
 
   private parseMinterDefinitionTransaction
-  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): MinterDefinitionTransaction {
-    const { rawtransaction, id, unconfirmed } = tx
+  (tx: any, blockId?: string, blockTime?: number): MinterDefinitionTransaction {
+    const { rawtransaction, id, unconfirmed, height } = tx
     const { data, version } = rawtransaction
 
     const { mintfulfillment, mintcondition } = data
@@ -386,7 +388,7 @@ export class Parser {
 
     // Set blockConstants
     transaction.blockId = blockId
-    transaction.blockHeight = blockHeight
+    transaction.blockHeight = height
     transaction.blockTime = blockTime
 
     transaction.id = id
@@ -396,8 +398,8 @@ export class Parser {
   }
 
   private parseCoinCreationTransaction
-  (tx: any, blockId?: string, blockHeight?: number, blockTime?: number): CoinCreationTransaction {
-    const { rawtransaction, id, unconfirmed, coinoutputids, coinoutputunlockhashes } = tx
+  (tx: any, blockId?: string, blockTime?: number): CoinCreationTransaction {
+    const { rawtransaction, id, unconfirmed, coinoutputids, coinoutputunlockhashes, height } = tx
     const { data, version } = rawtransaction
 
     const { mintfulfillment, coinoutputs } = data
@@ -409,7 +411,7 @@ export class Parser {
 
     // Set blockConstants
     transaction.blockId = blockId
-    transaction.blockHeight = blockHeight
+    transaction.blockHeight = height
     transaction.blockTime = blockTime
 
     transaction.id = id
@@ -534,6 +536,7 @@ export class Parser {
   }
 
   private getOutputs (outputs: any, outputIds: any, coinOutputUnlockhashes: any): Output[] {
+    if (!outputs) return []
     return outputs.map((output: Output, index: number) => {
       return {
         id: outputIds[index],
@@ -564,6 +567,7 @@ export class Parser {
   }
 
   private getBlockstakeOutputs (outputs: any, outputIds: any): Output[] {
+    if (!outputs) return []
     return outputs.map((output: Output, index: number) => {
       return {
         id: outputIds[index],

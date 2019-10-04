@@ -2,7 +2,7 @@
 
 exports[`test parsing a minting transaction 1`] = `
 MinterDefinitionTransaction {
-  "blockHeight": undefined,
+  "blockHeight": 210,
   "blockId": undefined,
   "blockTime": undefined,
   "id": "88fa9fa6f27693c11805c4a7d9272d7c3b299f0707aca7a887af24c002245b7e",
@@ -22,7 +22,7 @@ MinterDefinitionTransaction {
 
 exports[`test parsing a minting transaction 2`] = `
 CoinCreationTransaction {
-  "blockHeight": undefined,
+  "blockHeight": 116,
   "blockId": undefined,
   "blockTime": undefined,
   "coinCreationFulfillment": SingleSignatureFulfillment {
@@ -56,12 +56,16 @@ CoinOutputInfo {
       "type": 1,
     },
     "parentOutput": Object {
-      "condition": UnlockhashCondition {
-        "type": 1,
-        "unlockhash": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+      "condition": AtomicSwapCondition {
+        "contractAddress": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+        "hashedSecret": "322382392c5c402321a0507c9a8fce1c2599e72b631eff4f207104e4f225acfd",
+        "receiver": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+        "sender": "01d8a5b1f0e92d5c333b8368189c8e09c4e7aea7e7186967035242c6ee94bfa8f9cf19725d5e96",
+        "timelock": 1532177577,
+        "type": 2,
       },
       "id": "ba258e081b5bc7ab879f51be2715135cd166900a07ac5dc7ef3330ed45776206",
-      "value": "24999.9",
+      "value": "25000",
     },
     "parentid": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
     "txId": "e3d4558124736231f79df3c1c1df36c737002d6c10b1097cc098ce19273d3e12",
@@ -93,10 +97,10 @@ CoinOutputInfo {
     "parentOutput": Object {
       "condition": UnlockhashCondition {
         "type": 1,
-        "unlockhash": "01a9903be28795f59eff8c7092149e4b4d0372f051151d0f4d241e517d5c34ac6ebf511e036f96",
+        "unlockhash": "01fc8714235d549f890f35e52d745b9eeeee34926f96c4b9ef1689832f338d9349b453898f7e51",
       },
       "id": "d3001eb50f765a4cf0c2b3eea99680f87cd46db7795aa7fb51131a320fe786b9",
-      "value": "99999999.9",
+      "value": "100000000",
     },
     "parentid": "6321aecd61aa7ae6d37e611a9e3d3eba898b752789df2b559dcca5b11429ca4b",
     "txId": "8b13271e8b67961d066a80b1964bcb7e251d178e607e94b9992a76bc0d172647",
@@ -121,6 +125,14 @@ CoinOutputInfo {
       "signature": "c23082244d8982abcd9dc49b0b1ccc7ad7c4aa6b29c7f99548aad6f6c6e460074aca2fd8fad12081e2889ba07c2cd65b8e9e7a5168d897c685fd70950f951802",
       "type": 1,
     },
+    "parentOutput": Object {
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "01bd7048f40168df7d837fd398bcffdf2d69d992ef53bd1677570d373ba378edea8a72317cf336",
+      },
+      "id": undefined,
+      "value": "10",
+    },
     "parentid": "3559a1efb6b2f14edd1c885d61068979e56dc66cd8861d98a9ba77e54453d434",
     "txId": "6a63cd6e6f680ed5d02d7eae8539664bb59ab94c09d055f4be65bde5930fab2e",
   },
@@ -141,14 +153,6 @@ BlockstakeOutputInfo {
       "publicKey": "ed25519:846bc547599b9ed6f686fd1bca39e8fc5524559b559081ec7bb76b6a7e5c2218",
       "signature": "cf0f67ec82fe4aa8531223a2f8522f5927537acb79516a3726c1636e9b540d3f1cdb9f79f08740d2f835d6f5f82a823e12c505d30c10ae4f53054742072c1509",
       "type": 1,
-    },
-    "parentOutput": Object {
-      "condition": UnlockhashCondition {
-        "type": 1,
-        "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
-      },
-      "id": "ef6663292e70cd5a2f2ee3e3753d91828b5c21eda8d99088d35a9fb95922114c",
-      "value": "900",
     },
     "parentid": "603222de3b3e729950d6eccd9dfc4882e64cc48cb1147aa51f158afc6ddc9b1b",
     "txId": "cc93a40764118c2546dc976ebe10d61b42f5ef9763ff75733075c777ce1f30dd",
@@ -219,14 +223,6 @@ Block {
             "signature": "5c095a6f16780e9a78692287bb48aa40b3f8fe40398275e86e921de980b9d819f79cf6007bb69f81714a2ab60925e13ae8459016e86f39afa37e108f05e65a00",
             "type": 1,
           },
-          "parentOutput": Object {
-            "condition": UnlockhashCondition {
-              "type": 1,
-              "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
-            },
-            "id": "87d11d7e6a8c381fc98195168af393d82872cc4a69749bfa3138150a85213070",
-            "value": "900",
-          },
           "parentid": "6402109ebc0a7aca37c63ce45b13e96c2f40104ed6ced65859b87354a451a673",
         },
       ],
@@ -261,17 +257,12 @@ Block {
             "type": 1,
           },
           "parentOutput": Object {
-            "condition": MultisignatureCondition {
-              "multisigAddress": "03e338203f19f1f1470287f52ae84f4644b989491b8a59d5eec3d3d38cf1021c87fb0f5cf914c3",
-              "signatureCount": 2,
-              "type": 4,
-              "unlockhashes": Array [
-                "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
-                "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
-              ],
+            "condition": UnlockhashCondition {
+              "type": 1,
+              "unlockhash": "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
             },
             "id": "b824e78f95745f514153c0e2047a761808733f821c9f0e5d014c38b569fa0721",
-            "value": "100",
+            "value": "300",
           },
           "parentid": "456e41e7473e1e69853226078af16b7df94f89473324479c0f3196ee1fe4fa82",
         },
@@ -325,12 +316,17 @@ Block {
             "type": 3,
           },
           "parentOutput": Object {
-            "condition": UnlockhashCondition {
-              "type": 1,
-              "unlockhash": "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+            "condition": MultisignatureCondition {
+              "multisigAddress": "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+              "signatureCount": 2,
+              "type": 4,
+              "unlockhashes": Array [
+                "010166d96586cc4d678eedca31a03d36675873b4e4365066a75a54d0cdda5879bdd3df1b54a698",
+                "01598a93366f325dc773a6d92d1e27f998e9267e2faa862e1d90ad84bf3a87bb211bc3ee5ed275",
+              ],
             },
             "id": "70b8ed99cc36847a702a124bfee76d66f5bc5a21201d6e892895a85051d325ee",
-            "value": "4",
+            "value": "100",
           },
           "parentid": "b824e78f95745f514153c0e2047a761808733f821c9f0e5d014c38b569fa0721",
         },
@@ -389,14 +385,6 @@ Block {
             "signature": "ef972bdd313737ab928e477f86a835a3881ad125865404ee670b2ff53e8ea57489895101472b8b90a9968804b82bb79c503687a7467a014a5f48858cc7e06903",
             "type": 1,
           },
-          "parentOutput": Object {
-            "condition": UnlockhashCondition {
-              "type": 1,
-              "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
-            },
-            "id": "2a2b7eaf655794d1d8c09809db45dd187d2a57eba7369d21be3d975d94e2f5bc",
-            "value": "900",
-          },
           "parentid": "e107bda37b98c9d326eecee57726efef4bfd8979b47df81550ea05fa3ced788b",
         },
       ],
@@ -423,7 +411,7 @@ Block {
 
 exports[`test parsing transaction 1`] = `
 DefaultTransaction {
-  "blockHeight": undefined,
+  "blockHeight": 5,
   "blockId": undefined,
   "blockStakeInputs": Array [
     Object {
@@ -431,14 +419,6 @@ DefaultTransaction {
         "publicKey": "ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b",
         "signature": "6d796ef7369853fd8b3dd1ea7a75c8929c0e6c2387a2c5b3c78b61c34734ab65222578483458c68f8b25d5970b02665cd68e2d57972575494a40249cbaf41f0b",
         "type": 1,
-      },
-      "parentOutput": Object {
-        "condition": UnlockhashCondition {
-          "type": 1,
-          "unlockhash": "01fae67d9109d9cc1d9f7209468d55d0d52eca8ff23ae26db54a14568a5511590bca2a72d13ab7",
-        },
-        "id": "25ac4e89593701f01847f28275f45cb3630624d3c86dda776cf3f2fda20afc36",
-        "value": "1000",
       },
       "parentid": "90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0",
     },
@@ -487,7 +467,7 @@ Wallet {
   "isBlockCreator": false,
   "transactions": Array [
     DefaultTransaction {
-      "blockHeight": undefined,
+      "blockHeight": 367255,
       "blockId": undefined,
       "blockStakeInputs": Array [],
       "blockStakeOutputs": Array [],
@@ -502,10 +482,10 @@ Wallet {
           "parentOutput": Object {
             "condition": UnlockhashCondition {
               "type": 1,
-              "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+              "unlockhash": "018f6524a5c54c33ec7bcab23c974060f97f16b1f10e4ac0f03fce9e55e5780f3b86dfd42e042d",
             },
             "id": "da2ca522c21dd46f7c1405876253fef594835ed07f14b905c615730e63d0c7fe",
-            "value": "300",
+            "value": "599.9",
           },
           "parentid": "4698d5c8c2691a960ff3475f919b38bc846aa732917859d8566ac7f7628c590c",
         },
@@ -533,7 +513,7 @@ Wallet {
       "version": 1,
     },
     DefaultTransaction {
-      "blockHeight": undefined,
+      "blockHeight": 366637,
       "blockId": undefined,
       "blockStakeInputs": Array [],
       "blockStakeOutputs": Array [],
@@ -548,10 +528,10 @@ Wallet {
           "parentOutput": Object {
             "condition": UnlockhashCondition {
               "type": 1,
-              "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+              "unlockhash": "01e73e6bcac9764649c6b8001efebafcf99dbbee55795ea8b2c25f5087455bfcb686715ea37edd",
             },
             "id": "2bdb4f32f4c64c05b0562ee998dcf20c88c24904286f0d6f73f2475654e26d9d",
-            "value": "300",
+            "value": "599.9",
           },
           "parentid": "04932c4eae3a9630ffdb94d173751845a2adcf900fdd172e506a58921806f005",
         },
@@ -579,7 +559,7 @@ Wallet {
       "version": 1,
     },
     DefaultTransaction {
-      "blockHeight": undefined,
+      "blockHeight": 366461,
       "blockId": undefined,
       "blockStakeInputs": Array [],
       "blockStakeOutputs": Array [],
@@ -594,10 +574,10 @@ Wallet {
           "parentOutput": Object {
             "condition": UnlockhashCondition {
               "type": 1,
-              "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+              "unlockhash": "013b3e0e0e624d554290fb373e8ae0664b5a3176d4b4cf67b0a505e553257fac7bf176c674d9d7",
             },
             "id": "18c2d0762964349b4c51dcbd1b3e7c113b186a83a8216c9c9b48a3b95ee1e940",
-            "value": "300",
+            "value": "599.9",
           },
           "parentid": "37cefaf64a28273a0576272675e91f6676263029d79d560948d0021f371ea6e6",
         },
