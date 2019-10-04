@@ -357,11 +357,11 @@ export class Parser {
 
     let transaction: DefaultTransaction = new DefaultTransaction(version)
 
-    transaction.blockStakeInputs = this.getInputs(bsInputs)
     transaction.blockStakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
+    transaction.blockStakeInputs = this.getInputs(bsInputs, transaction.blockStakeOutputs)
 
-    transaction.coinInputs = this.getInputs(coinInputs)
     transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
+    transaction.coinInputs = this.getInputs(coinInputs, transaction.coinOutputs)
 
     // Set blockConstants
     transaction.blockId = blockId
@@ -583,12 +583,20 @@ export class Parser {
     })
   }
 
-  private getInputs (inputs: any): Input[] {
-    return inputs.map((input: Input) => {
-      return {
+  private getInputs (inputs: any, outputs: any): Input[] {
+    return inputs.map((input: Input, index: number) => {
+      const parentOutput = outputs[index]
+      const parsedInput = {
         parentid: input.parentid,
         fulfillment: this.getFulfillment(input)
       }
+      if (parentOutput) {
+        return {
+          ...parsedInput,
+          parentOutput
+        }
+      }
+      return parsedInput
     })
   }
 

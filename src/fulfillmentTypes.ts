@@ -1,3 +1,9 @@
+export enum FulfillmentType {
+  SingleSignatureFulfillment,
+  AtomicSwapFulfillment,
+  MultisignatureFulfillment
+}
+
 export abstract class Fulfillment {
   public type: number
 
@@ -5,11 +11,11 @@ export abstract class Fulfillment {
     this.type = type
   }
 
-  public getFulfillmentType (): number {
+  public kind (): number {
     return this.type
   }
 
-  public abstract getFulfillmentTypeAsString (): string
+  public abstract getFulfillmentType (): FulfillmentType
 }
 
 export class SingleSignatureFulfillment extends Fulfillment {
@@ -22,8 +28,8 @@ export class SingleSignatureFulfillment extends Fulfillment {
     this.signature = signature
   }
 
-  public getFulfillmentTypeAsString (): string {
-    return 'Single Signature Fulfillment'
+  public getFulfillmentType (): FulfillmentType {
+    return FulfillmentType.SingleSignatureFulfillment
   }
 }
 
@@ -38,8 +44,8 @@ export class AtomicSwapFulfillment extends Fulfillment {
     this.signature = signature
   }
 
-  public getFulfillmentTypeAsString (): string {
-    return 'Atomic Swap Fulfillment'
+  public getFulfillmentType (): FulfillmentType {
+    return FulfillmentType.AtomicSwapFulfillment
   }
 }
 
@@ -51,8 +57,8 @@ export class MultisignatureFulfillment extends Fulfillment {
     this.pairs = pairs
   }
 
-  public getFulfillmentTypeAsString (): string {
-    return 'Multisignature Fulfillment'
+  public getFulfillmentType (): FulfillmentType {
+    return FulfillmentType.MultisignatureFulfillment
   }
 }
 

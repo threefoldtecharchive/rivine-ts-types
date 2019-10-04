@@ -6,7 +6,7 @@ import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
 } from '../testdata/data'
 import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
-import { SingleSignatureFulfillment } from '../fulfillmentTypes'
+import { SingleSignatureFulfillment, FulfillmentType } from '../fulfillmentTypes'
 import { ConditionType } from '../conditionTypes'
 import { DefaultTransaction, MinterDefinitionTransaction, CoinCreationTransaction } from '../transactionTypes'
 
@@ -54,7 +54,7 @@ test('test parsing transaction', () => {
     if (firstBsInput) {
       expect(firstBsInput.parentid).toBe('90fa5e4456ebaefc77e9e2852199e1003dced4bac65e6e2e08b70690f97013d0')
       expect(firstBsInput instanceof SingleSignatureFulfillment)
-      expect(firstBsInput.fulfillment.getFulfillmentTypeAsString()).toBe('Single Signature Fulfillment')
+      expect(firstBsInput.fulfillment.getFulfillmentType()).toBe(FulfillmentType.SingleSignatureFulfillment)
 
       const singleSigFulfillment = firstBsInput.fulfillment as SingleSignatureFulfillment
       expect(singleSigFulfillment.publicKey).toBe('ed25519:b76697f1517455d0fa41fe57c2b54c80cbdd9761393f7e545db747482eb2727b')
