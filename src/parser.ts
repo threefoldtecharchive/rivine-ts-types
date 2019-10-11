@@ -61,7 +61,7 @@ export class Parser {
     // If blocks field is populated then the address is probably the address of a blockcreator
     if (blocks) { return this.parseWalletForBlockCreator(blocks, transactions) }
 
-    const { spentCoinOutputs, unspentCoinOutputs, availableBalance }
+    const { spentCoinOutputs, unspentCoinOutputs, availableBalance, lastCoinSpent }
       = this.findCoinOutputOutputAppearances(this.hash, transactions)
     const { availableBlockstakeBalance } = this.findBlockStakeOutputOutputAppearances(this.hash, transactions)
 
@@ -72,6 +72,9 @@ export class Parser {
 
     // Set Transaction on wallet object
     wallet.transactions = res.transactions.map((tx: any) => this.parseTransaction(tx))
+
+    // Set last coin spentlet.lastCoinSpent = lastCoinSpent
+    wallet.lastCoinSpent = lastCoinSpent
 
     // Set unspent coinoutputs on wallet object
     wallet.coinOutputs = this.parseCoinOutputsWallet(unspentCoinOutputs, false)
@@ -112,7 +115,8 @@ export class Parser {
 
     // Set spent coin outputs for block creator
     wallet.coinOutputsBlockCreator = this.parseCoinOutputsWallet(spentCoinOutputs, true)
-    wallet.coinOutputsBlockCreator = this.parseCoinOutputsWallet(unspentCoinOutputs, false)
+    wallet.coinOutputsBlockCreator =
+     wallet.coinOutputsBlockCreator.concat(this.parseCoinOutputsWallet(unspentCoinOutputs, false))
 
     // Set unspent blockstake outputs for block creator
     wallet.blockStakesOutputsBlockCreator
@@ -186,7 +190,9 @@ export class Parser {
         if (coinOutput) {
           return {
             ...coinOutput,
-            coinOutputId: tx.coinoutputids[ucoIndex]
+            coinOutputId: tx.coinoutputids[ucoIndex],
+            blockHeight: tx.height,
+            txid: tx.id
           }
         }
       })
@@ -551,7 +557,9 @@ export class Parser {
       return {
         id: output.coinOutputId,
         value: new Currency(output.value, this.precision),
-        spent
+        spent,
+        blockHeight: output.blockHeight,
+        txId: output.txid
       }
     })
   }
@@ -561,7 +569,9 @@ export class Parser {
       return {
         id: mp.minerPayoutId,
         value: new Currency(mp.value, this.precision),
-        spent
+        spent,
+        blockId: mp.blockid,
+        unlockhash: mp.unlockhash
       }
     })
   }
@@ -582,7 +592,10 @@ export class Parser {
       return {
         id: output.blockstakeOutputId,
         value: new Currency(output.value, 1),
-        spent
+        spent,
+        blockHeight: output.blockHeight,
+        condition: this.getCondition(output, [], 0),
+        txId: output.txid
       }
     })
   }

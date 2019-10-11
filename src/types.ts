@@ -109,6 +109,7 @@ export interface Output {
   spent?: boolean
   txId?: string
   blockId?: string
+  blockHeight?: number
   isBlockCreatorReward?: boolean
   unlockhash?: string
 }

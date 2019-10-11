@@ -447,24 +447,34 @@ Wallet {
   "address": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
   "coinOutputs": Array [
     Object {
+      "blockHeight": 367255,
       "id": "da2ca522c21dd46f7c1405876253fef594835ed07f14b905c615730e63d0c7fe",
       "spent": false,
+      "txId": "0b434e853b4b3be43a8d4fababc673b15700adbf04538dc202f40c6763bdfc2f",
       "value": "300",
     },
     Object {
+      "blockHeight": 366637,
       "id": "2bdb4f32f4c64c05b0562ee998dcf20c88c24904286f0d6f73f2475654e26d9d",
       "spent": false,
+      "txId": "156fc468dbeee709819eca1d86dc631966bf2df46ff29f4c5324b292ffb5dbe5",
       "value": "300",
     },
     Object {
+      "blockHeight": 366461,
       "id": "18c2d0762964349b4c51dcbd1b3e7c113b186a83a8216c9c9b48a3b95ee1e940",
       "spent": false,
+      "txId": "bf0e1dd403a4c4ecc78e26695ff81ad160334a4fae14a56a20b68a82b689b263",
       "value": "300",
     },
   ],
   "confirmedBlockstakeBalance": "0",
   "confirmedCoinBalance": "900",
   "isBlockCreator": false,
+  "lastCoinSpent": Object {
+    "height": 0,
+    "txid": "",
+  },
   "transactions": Array [
     DefaultTransaction {
       "blockHeight": 367255,
@@ -613,50 +623,100 @@ Wallet {
   "address": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
   "blockStakesOutputsBlockCreator": Array [
     Object {
+      "blockHeight": 7,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "b080442f38a245e24dfe1202102ad43613ade70ae2fee47f9932745e9be0a6cc",
       "spent": false,
+      "txId": "532d13050f750f137477317985971d84895076e2c24c87670e95b2509d9d16c6",
       "value": "3000",
     },
     Object {
+      "blockHeight": 5,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "b6ef86dd8f75fc0ed6b5a3794fdd1500bcda58c934aefa3816eb6dce246a8c83",
       "spent": true,
+      "txId": "b61d9885bfdbfbdcde968d6457a6b985332b5e470f3222df301c3ecc670e9c26",
       "value": "3000",
     },
     Object {
+      "blockHeight": 1,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "1d7f4ac218a2f360dd802843a0003443f77d151ba9329fdecbd8da37519b3419",
       "spent": true,
+      "txId": "91af9d5e879d4f571734f1cdf32ea34d7dffcb694ed0dfbc4d66a70f3c9217b6",
       "value": "3000",
     },
     Object {
+      "blockHeight": 6,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "af3e9b0f1834767655587cd59688b7fe290dc716be13196d2560cb116781df15",
       "spent": true,
+      "txId": "383b41c83e4e414cb146feeb8e85344b2d5caf81dce91628990b1444dcae1b35",
       "value": "3000",
     },
     Object {
+      "blockHeight": 3,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "a2b2224e60d42a2e23384f480a0732333dc878f5622dc0f20dac01cb58839bb0",
       "spent": true,
+      "txId": "f4fa9b855f391cbc29b2d32bf594a12ba1409c1cb57bb4ee5a4beb5ee4d5652e",
       "value": "3000",
     },
     Object {
+      "blockHeight": 0,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "cfe78f68f4597ba00472859be59a3b5d32616484ea12604ddc7df6c00095487d",
       "spent": true,
+      "txId": "eabb72ecddaeb524a172eb29e9010fc07ba5a13830da0add0593a0950e0d0ae4",
       "value": "3000",
     },
     Object {
+      "blockHeight": 4,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "2a33b5d09f095e31121df5a880b3767978ba0dc0a018159a72e7646faae73500",
       "spent": true,
+      "txId": "6c804d4754a3d38c7ae5f5c134cb4cbe22b98fc178a6928aaccf816d7d17bdf5",
       "value": "3000",
     },
     Object {
+      "blockHeight": 2,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "5e9c485e44f1fe202a43261ea0e62f6b6a1497380db1f93c7e4a9ad95e63dc58",
       "spent": true,
+      "txId": "47fdd730e98c06c745580db0ada4c1263f36b1d1a40d9e02c39316777f481c39",
       "value": "3000",
     },
   ],
   "coinOutputsBlockCreator": Array [
     Object {
+      "blockHeight": 0,
       "id": "a3c8f44d64c0636018a929d2caeec09fb9698bfdcbfa3a8225585a51e09ee563",
       "spent": false,
+      "txId": "eabb72ecddaeb524a172eb29e9010fc07ba5a13830da0add0593a0950e0d0ae4",
       "value": "100000000",
     },
   ],
@@ -673,38 +733,52 @@ Wallet {
   },
   "minerPayouts": Array [
     Object {
+      "blockId": "114b713b789c1d2c30d33cc3b1861eceb86c3c99031422e0f575bf482fbfa10d",
       "id": "8eb9799436045b37ac602dbf9017dd1a75f05c49316d04a960cb49c29e56f290",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "17a694ea2e45a5a7f2e6b5410a577952d8e93eb91a85d7ddfdb7aa6a906d45a5",
       "id": "a23129f85650a2327a7c30b6f738a067d9d77eebb2a5d4ad1beb8603ce3c66cd",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "5f56c6d62b4d5b343d757f4e92bd417fa5b9a20102b0ae3d79c4dc2af96340ae",
       "id": "5285b4ccf01ba1ba9b42dab14710cf02d570170cf6fd604a83e9ed93dca6de31",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "987ea3ce6eb77fff92381d6f660fb4818865b5e09d55062628df7faa0ed53bb3",
       "id": "2579621212a8509033bf8140dc5a4edad7462bcfd3ff8d74259ba87e304bfd58",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "9d2cdb8b352a9a5c5282efa333cf0f526cb92f2ed6dffbd11cf41b3b80ec5c8a",
       "id": "6e4f409b5b58929174c8f980740baa3dacffb7a4e1e6af93d709668c873339cf",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "cb4022ea8c44eb817b159822d0ca42d6c7b6f832d6e932259e9687338978265e",
       "id": "b59a1cb70415b56d47627a12ad7c8cc6e603153083c9d062c9a62deb8ba3a8c9",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
     Object {
+      "blockId": "f9b8497660d72cbe724c1128dc4dd27a78f17171e4f5547174956fa139049233",
       "id": "c22eabdb39943440266a9ea45409858bcff3060c22ab34c95bb0e5be54311c6e",
       "spent": false,
+      "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
       "value": "10",
     },
   ],
