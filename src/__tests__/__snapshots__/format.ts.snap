@@ -146,6 +146,131 @@ CoinOutputInfo {
 }
 `;
 
+exports[`test parsing an atomic swap contract address 1`] = `
+Wallet {
+  "address": "02ed044fa056e6fda24261628576d61f7ed580a649496a582ac0691f90f4ef89002a1a5f368c57",
+  "coinOutputs": Array [
+    Object {
+      "blockHeight": 73623,
+      "condition": AtomicSwapCondition {
+        "contractAddress": undefined,
+        "hashedSecret": "322382392c5c402321a0507c9a8fce1c2599e72b631eff4f207104e4f225acfd",
+        "receiver": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+        "sender": "01d8a5b1f0e92d5c333b8368189c8e09c4e7aea7e7186967035242c6ee94bfa8f9cf19725d5e96",
+        "timelock": 1532177577,
+        "type": 2,
+      },
+      "id": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+      "spent": true,
+      "txId": "37e2ffea404d5dd053e952a06182552c7b3a9d5ee672dd2501ebd0c868c9f215",
+      "value": "25000",
+    },
+  ],
+  "confirmedBlockstakeBalance": "0",
+  "confirmedCoinBalance": "0",
+  "isBlockCreator": false,
+  "lastCoinSpent": Object {
+    "height": 73627,
+    "txid": "e3d4558124736231f79df3c1c1df36c737002d6c10b1097cc098ce19273d3e12",
+  },
+  "transactions": Array [
+    DefaultTransaction {
+      "blockHeight": 73623,
+      "blockId": undefined,
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
+      "blockTime": undefined,
+      "coinInputs": Array [
+        Object {
+          "fulfillment": SingleSignatureFulfillment {
+            "publicKey": "ed25519:1e3d8ef0467b3e9fcce341189a577bf80866ea5b38e9b345464bf54434331881",
+            "signature": "f026d7dc1d66d4e272e4afb84c16a76f4f847384b874a7c914eb246da6dd6e12197e80ac754ef5bca7cabe51343d98ef9dd535ef4ed41c9ddfc4881b4d4f8a00",
+            "type": 1,
+          },
+          "parentOutput": Object {
+            "condition": UnlockhashCondition {
+              "type": 1,
+              "unlockhash": "01b20e5cfd38dd4f3fe85d04b43a04d603e8edb2c3978d6645c9fa94399c7e9603e5bf076b90e0",
+            },
+            "id": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+            "value": "988232.099999999",
+          },
+          "parentid": "d3eb85596504a257a68e2b47f0ad79af0f99f28a9b9683660f61589bb3f35624",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": AtomicSwapCondition {
+            "contractAddress": "02ed044fa056e6fda24261628576d61f7ed580a649496a582ac0691f90f4ef89002a1a5f368c57",
+            "hashedSecret": "322382392c5c402321a0507c9a8fce1c2599e72b631eff4f207104e4f225acfd",
+            "receiver": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+            "sender": "01d8a5b1f0e92d5c333b8368189c8e09c4e7aea7e7186967035242c6ee94bfa8f9cf19725d5e96",
+            "timelock": 1532177577,
+            "type": 2,
+          },
+          "id": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+          "value": "25000",
+        },
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "01dd80a9fb72a8674a8ca28f567d3fc8d1f137bb52e01fffa8152dede7029fffd73c1d00eae73e",
+          },
+          "id": "994c3e698592e5354bd75329f3b50707cbe659da4d0b7f0bffe061bb443a412f",
+          "value": "963231.999999999",
+        },
+      ],
+      "id": "37e2ffea404d5dd053e952a06182552c7b3a9d5ee672dd2501ebd0c868c9f215",
+      "unconfirmed": false,
+      "version": 1,
+    },
+    DefaultTransaction {
+      "blockHeight": 73627,
+      "blockId": undefined,
+      "blockStakeInputs": Array [],
+      "blockStakeOutputs": Array [],
+      "blockTime": undefined,
+      "coinInputs": Array [
+        Object {
+          "fulfillment": AtomicSwapFulfillment {
+            "publicKey": "ed25519:0057bbe7d51abdaedb1c31a2f1b3b12b3c47bdf2c31b94d248561da244fbb7da",
+            "secret": "5486225923792fd14b2e31317381154fba96e6c88f7cc6e7dd758b3c8d26c642",
+            "signature": "83e1e1225a292c42f038d2c9061969c334520ad06d45c4aa48167ebcce72eab3197cb6a7b6373d30d026dfdda50937967f0c0437dd93d15252f22819dcbbec09",
+            "type": 1,
+          },
+          "parentOutput": Object {
+            "condition": AtomicSwapCondition {
+              "contractAddress": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+              "hashedSecret": "322382392c5c402321a0507c9a8fce1c2599e72b631eff4f207104e4f225acfd",
+              "receiver": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+              "sender": "01d8a5b1f0e92d5c333b8368189c8e09c4e7aea7e7186967035242c6ee94bfa8f9cf19725d5e96",
+              "timelock": 1532177577,
+              "type": 2,
+            },
+            "id": "ba258e081b5bc7ab879f51be2715135cd166900a07ac5dc7ef3330ed45776206",
+            "value": "25000",
+          },
+          "parentid": "19c162756112c6d950593c8d740999d976a9743390415ee870104f336551d73c",
+        },
+      ],
+      "coinOutputs": Array [
+        Object {
+          "condition": UnlockhashCondition {
+            "type": 1,
+            "unlockhash": "01a75b03da048b933d2d04cc22283c170eb8300f1806b02bf7138f4092a3a385703864e427d165",
+          },
+          "id": "ba258e081b5bc7ab879f51be2715135cd166900a07ac5dc7ef3330ed45776206",
+          "value": "24999.9",
+        },
+      ],
+      "id": "e3d4558124736231f79df3c1c1df36c737002d6c10b1097cc098ce19273d3e12",
+      "unconfirmed": false,
+      "version": 1,
+    },
+  ],
+}
+`;
+
 exports[`test parsing an spent blockstake output id 1`] = `
 BlockstakeOutputInfo {
   "input": Object {
@@ -197,20 +322,30 @@ CoinOutputInfo {
 
 exports[`test parsing block 1`] = `
 Block {
+  "estimatedActiveBlockStakes": "974",
   "height": 367184,
   "id": "2c8cc0b42b6232dcab8d27472781cfecfcab9fcae36d776672244016b69cead5",
-  "minerFees": Array [
+  "minerPayouts": Array [
     Object {
+      "description": "Block Creator Reward (new coins)",
       "id": "cf958eb5c1b44ea603bfe29afbb22ba72371a48f881d1abdd6dc63a8b05254c4",
+      "isBlockCreatorReward": true,
       "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
       "value": "10",
     },
     Object {
+      "description": "All Transaction fees combined",
       "id": "c71f58335faf9a31a4c76877c448dd756eac95c8061968215fd4a1ce88cbcec2",
+      "isBlockCreatorReward": false,
+      "sourceTransactionIds": Array [
+        "309ad6dd62d158d7a79b0810dcde2faf38504088cfabe0a25c1ffa3d25a46c04",
+        "bd30d6e590597797d5d24115afeca02e4d0efc55902343e18d7bf0c30181fe43",
+      ],
       "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
       "value": "0.2",
     },
   ],
+  "parentId": "f7495ebb1f7464455fabba51489631533d0dbc04eaa24f1880879770b80bbc49",
   "timestamp": 1568963542,
   "transactions": Array [
     DefaultTransaction {
@@ -364,15 +499,19 @@ Block {
 
 exports[`test parsing block from block response 1`] = `
 Block {
+  "estimatedActiveBlockStakes": "972",
   "height": 371498,
   "id": "1220b86ae316865d6efe51211256041a9636984e74400dc5ab90700fdad6c179",
-  "minerFees": Array [
+  "minerPayouts": Array [
     Object {
+      "description": "Block Creator Reward (new coins)",
       "id": "602a519615e374b5b11660660e48588bd47c89f8ee225fbb8f07b4b597a86fc6",
+      "isBlockCreatorReward": true,
       "unlockhash": "0165c4d7cf3c52cab81fd7e82cd9e39d7fb8a1c7ab7515ac904299495244d0822c15841672f205",
       "value": "10",
     },
   ],
+  "parentId": "053262f16fe68923bbbaf81f63e03ea2fcf4aa481a336d0b5a67d718f5439513",
   "timestamp": 1569481927,
   "transactions": Array [
     DefaultTransaction {
@@ -448,6 +587,10 @@ Wallet {
   "coinOutputs": Array [
     Object {
       "blockHeight": 367255,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+      },
       "id": "da2ca522c21dd46f7c1405876253fef594835ed07f14b905c615730e63d0c7fe",
       "spent": false,
       "txId": "0b434e853b4b3be43a8d4fababc673b15700adbf04538dc202f40c6763bdfc2f",
@@ -455,6 +598,10 @@ Wallet {
     },
     Object {
       "blockHeight": 366637,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+      },
       "id": "2bdb4f32f4c64c05b0562ee998dcf20c88c24904286f0d6f73f2475654e26d9d",
       "spent": false,
       "txId": "156fc468dbeee709819eca1d86dc631966bf2df46ff29f4c5324b292ffb5dbe5",
@@ -462,6 +609,10 @@ Wallet {
     },
     Object {
       "blockHeight": 366461,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "0130241fe6fa22f547e9cf2e268af55d117bfe5fbb02894eec42b906a5a9c41ad69d91e6776af1",
+      },
       "id": "18c2d0762964349b4c51dcbd1b3e7c113b186a83a8216c9c9b48a3b95ee1e940",
       "spent": false,
       "txId": "bf0e1dd403a4c4ecc78e26695ff81ad160334a4fae14a56a20b68a82b689b263",
@@ -714,6 +865,10 @@ Wallet {
   "coinOutputsBlockCreator": Array [
     Object {
       "blockHeight": 0,
+      "condition": UnlockhashCondition {
+        "type": 1,
+        "unlockhash": "015a080a9259b9d4aaa550e2156f49b1a79a64c7ea463d810d4493e8242e6791584fbdac553e6f",
+      },
       "id": "a3c8f44d64c0636018a929d2caeec09fb9698bfdcbfa3a8225585a51e09ee563",
       "spent": false,
       "txId": "eabb72ecddaeb524a172eb29e9010fc07ba5a13830da0add0593a0950e0d0ae4",

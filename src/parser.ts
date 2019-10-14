@@ -6,7 +6,7 @@ import {
 } from './conditionTypes'
 import { AtomicSwapFulfillment, Fulfillment, KeyPair, MultisignatureFulfillment, SingleSignatureFulfillment } from './fulfillmentTypes'
 import {
-  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input, LastSpent, MinerFee, Output, Wallet
+  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input, LastSpent, MinerPayout, Output, Wallet
 } from './types'
 import { Transaction, DefaultTransaction, CoinCreationTransaction, MinterDefinitionTransaction } from './transactionTypes'
 
@@ -79,7 +79,8 @@ export class Parser {
     // Set unspent coinoutputs on wallet object
     wallet.coinOutputs = this.parseCoinOutputsWallet(unspentCoinOutputs, false)
     // Set spent coinoutputs on wallet object
-    wallet.coinOutputs = wallet.coinOutputs.concat(this.parseCoinOutputsWallet(spentCoinOutputs, true))
+    wallet.coinOutputs
+      = wallet.coinOutputs.concat(this.parseCoinOutputsWallet(spentCoinOutputs, true))
 
     return wallet
   }
@@ -87,6 +88,7 @@ export class Parser {
   private parseWalletForBlockCreator (blocks: any, transactions: any): Wallet {
     const { spentMinerPayouts, unspentMinerPayouts, availableBalance: availableMinerfeeBalance }
       = this.findMinerPayoutAppearances(this.hash, transactions, blocks)
+    // tslint:disable-next-line
     const { spentCoinOutputs, unspentCoinOutputs,lastCoinSpent, availableBalance: availableCoinBalance }
       = this.findCoinOutputOutputAppearances(this.hash, transactions)
     const {
@@ -116,7 +118,8 @@ export class Parser {
     // Set spent coin outputs for block creator
     wallet.coinOutputsBlockCreator = this.parseCoinOutputsWallet(spentCoinOutputs, true)
     wallet.coinOutputsBlockCreator =
-     wallet.coinOutputsBlockCreator.concat(this.parseCoinOutputsWallet(unspentCoinOutputs, false))
+     wallet.coinOutputsBlockCreator
+      .concat(this.parseCoinOutputsWallet(unspentCoinOutputs, false))
 
     // Set unspent blockstake outputs for block creator
     wallet.blockStakesOutputsBlockCreator
@@ -310,18 +313,34 @@ export class Parser {
   }
 
   private parseBlock (block: any): Block {
-    const { blockid: id, height, transactions, rawblock, minerpayoutids } = block
-    const { timestamp, minerpayouts } = rawblock
+    const { blockid: id, height, transactions, rawblock, minerpayoutids, estimatedactivebs } = block
+    const { timestamp, minerpayouts, parentid } = rawblock
 
     const parsedTransactions = transactions.map((tx: any) => this.parseTransaction(tx, id, timestamp))
-    const parsedBlock = new Block(id, height, timestamp, parsedTransactions)
+    const parsedBlock = new Block(id, height, timestamp, parsedTransactions, parentid, estimatedactivebs)
 
     if (minerpayouts.length > 0) {
-      parsedBlock.minerFees = minerpayouts.map((mp: MinerFee, index: number) => {
-        return {
+      parsedBlock.minerPayouts = minerpayouts.map((mp: MinerPayout, index: number) => {
+        let payout = {
           value: new Currency(mp.value, this.precision),
           unlockhash: mp.unlockhash,
           id: minerpayoutids[index]
+        }
+        if (index === 0) {
+          return {
+            ...payout,
+            isBlockCreatorReward: true,
+            description: 'Block Creator Reward (new coins)'
+          }
+        } else {
+          const sourceTransactionIds = transactions.filter((tx: any) => tx.rawtransaction.data.minerfees)
+            .map((tx: any) => tx.id)
+          return {
+            ...payout,
+            isBlockCreatorReward: false,
+            sourceTransactionIds,
+            description: 'All Transaction fees combined'
+          }
         }
       })
     }
@@ -476,7 +495,7 @@ export class Parser {
     // we now look inside the minerfees if we can find this output
     if (!coinOutput) {
       parsedBlocks.forEach((block: Block) => {
-        const minerFee = find(block.minerFees, (mf: MinerFee) => mf.id === this.hash) as MinerFee
+        const minerFee = find(block.minerPayouts, (mf: MinerPayout) => mf.id === this.hash) as MinerPayout
         if (minerFee) {
           coinOutput = {
             id: minerFee.id,
@@ -553,13 +572,14 @@ export class Parser {
   }
 
   private parseCoinOutputsWallet (outputs: any, spent: boolean): Output[] {
-    return outputs.map((output: any) => {
+    return outputs.map((output: any, index: number) => {
       return {
         id: output.coinOutputId,
         value: new Currency(output.value, this.precision),
         spent,
         blockHeight: output.blockHeight,
-        txId: output.txid
+        txId: output.txid,
+        condition: this.getCondition(output, [], index)
       }
     })
   }

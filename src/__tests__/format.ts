@@ -2,12 +2,13 @@ import { Parser } from '../parser'
 import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
   spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
-  spentAtomicSwapCoinOutputId, coinCreationTransactionJSON, minterDefinitionTransactionJSON
+  spentAtomicSwapCoinOutputId, coinCreationTransactionJSON, minterDefinitionTransactionJSON,
+  atomicSwapContract
 } from '../testdata/data'
 import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
 import { SingleSignatureFulfillment, FulfillmentType } from '../fulfillmentTypes'
-import { ConditionType } from '../conditionTypes'
+import { ConditionType, AtomicSwapCondition } from '../conditionTypes'
 import { DefaultTransaction, MinterDefinitionTransaction, CoinCreationTransaction } from '../transactionTypes'
 
 test('test parsing block', () => {
@@ -250,11 +251,30 @@ test('test parsing a minting transaction', () => {
   expect(parsedResponse instanceof CoinCreationTransaction)
   expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
 
-  expect(parsedResponse.id).toBe('589236cc9d800884d1270b627c3b4d3da9e12e330c763f20d4e4dd841730810b')
+  expect(parsedResponse.id).toBe(hash)
   expect(parsedResponse.unconfirmed).toBe(false)
 
   expect(parsedResponse.coinCreationFulfillment).toBeTruthy()
   expect(parsedResponse.coinCreationOutputs).toBeTruthy()
+
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing an atomic swap contract address', () => {
+  const hash = '02ed044fa056e6fda24261628576d61f7ed580a649496a582ac0691f90f4ef89002a1a5f368c57'
+  const parser = new Parser()
+  const parsedResponse
+    = parser.ParseHashResponseJSON(atomicSwapContract, hash) as Wallet
+
+  expect(parsedResponse.kind()).toBe(ResponseType.Wallet)
+
+  expect(parsedResponse.address).toBe(hash)
+
+  if (parsedResponse.coinOutputs) {
+    expect(parsedResponse.coinOutputs.length).toBe(1)
+    expect(parsedResponse.coinOutputs[0].condition instanceof AtomicSwapCondition)
+  }
 
   // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()

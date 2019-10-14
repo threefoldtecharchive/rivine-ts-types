@@ -14,9 +14,5 @@
           "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
       }
   },
-  "jsRules": {
-      "max-line-length": {
-          "options": [120]
-      }
-  }
+  "max-line-length": [true, 150]
 }

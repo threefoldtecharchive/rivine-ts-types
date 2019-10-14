@@ -20,14 +20,19 @@ export class Block extends Response {
   public height: number
   public timestamp: number
   public transactions: Transaction[]
-  public minerFees?: MinerFee[]
+  public parentId: string
+  public estimatedActiveBlockStakes: number
+  public minerPayouts?: MinerPayout[]
 
-  constructor (id: string, height: number, timestamp: number, transactions: Transaction[]) {
+  // tslint:disable-next-line
+  constructor (id: string, height: number, timestamp: number, transactions: Transaction[], parentId: string, estimatedActiveBlockStakes: number) {
     super()
     this.id = id
     this.height = height
     this.timestamp = timestamp
     this.transactions = transactions
+    this.parentId = parentId
+    this.estimatedActiveBlockStakes = estimatedActiveBlockStakes
   }
 
   public kind (): number {
@@ -114,10 +119,21 @@ export interface Output {
   unlockhash?: string
 }
 
-export interface MinerFee {
+export interface AtomicSwapOutput extends Output {
+  contractAddress: string
+  sender: string
+  receiver: string
+  hashedSecret: string
+  timelock: number
+}
+
+export interface MinerPayout {
   value: Currency
   unlockhash: string
-  id: string
+  id: string,
+  sourceTransactionIds?: [string]
+  description?: string
+  isBlockCreatorReward: boolean
 }
 
 export interface LastSpent {
