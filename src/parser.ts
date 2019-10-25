@@ -321,7 +321,7 @@ export class Parser {
 
     if (minerpayouts.length > 0) {
       parsedBlock.minerPayouts = minerpayouts.map((mp: MinerPayout, index: number) => {
-        let payout = {
+        const payout = {
           value: new Currency(mp.value, this.precision),
           unlockhash: mp.unlockhash,
           id: minerpayoutids[index]
@@ -366,7 +366,7 @@ export class Parser {
 
   private parseCoinOrBlockStakeTransaction
   (tx: any, blockId?: string, blockTime?: number): Transaction {
-    const { rawtransaction, id, unconfirmed, coininputoutputs, height } = tx
+    const { rawtransaction, id, unconfirmed, coininputoutputs, blockstakeinputoutputs, height } = tx
     const { version } = tx.rawtransaction
 
     const bsOutputs = rawtransaction.data.blockstakeoutputs || []
@@ -379,11 +379,10 @@ export class Parser {
     const coinInputs = rawtransaction.data.coininputs || []
 
     // todo add arbitrary data and extension props
-
     let transaction: DefaultTransaction = new DefaultTransaction(version)
 
     transaction.blockStakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
-    const blockStakeInputsOutputs = this.getBlockstakeOutputs(coininputoutputs, bsOutputIds)
+    const blockStakeInputsOutputs = this.getBlockstakeOutputs(blockstakeinputoutputs, bsOutputIds)
     transaction.blockStakeInputs = this.getInputs(bsInputs, blockStakeInputsOutputs)
 
     transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
