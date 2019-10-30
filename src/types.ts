@@ -22,7 +22,7 @@ export class Block extends Response {
   public transactions: Transaction[]
   public parentId: string
   public estimatedActiveBlockStakes: number
-  public minerPayouts?: MinerPayout[]
+  public minerPayouts?: MinerPayout[] | CustodyFeeMinerPayout[]
 
   // tslint:disable-next-line
   constructor (id: string, height: number, timestamp: number, transactions: Transaction[], parentId: string, estimatedActiveBlockStakes: number) {
@@ -107,6 +107,15 @@ export interface Input {
   txid?: string
 }
 
+export interface CustodyInput extends Input {
+  creationTime: number
+  isCustodyFee: boolean
+  feeComputationTime: number
+  custodyFee: Currency
+  spendableValue: Currency
+  spent: boolean
+}
+
 export interface Output {
   value: Currency
   condition?: Condition
@@ -117,6 +126,15 @@ export interface Output {
   blockHeight?: number
   isBlockCreatorReward?: boolean
   unlockhash?: string
+}
+
+export interface CustodyOutput extends Output {
+  creationTime: number
+  isCustodyFee: boolean
+  feeComputationTime: number
+  custodyFee: Currency
+  spendableValue: Currency
+  spent: boolean
 }
 
 export interface AtomicSwapOutput extends Output {
@@ -134,6 +152,15 @@ export interface MinerPayout {
   sourceTransactionIds?: [string]
   description?: string
   isBlockCreatorReward: boolean
+}
+
+export interface CustodyFeeMinerPayout extends MinerPayout {
+  creationTime: number
+  isCustodyFee: boolean
+  feeComputationTime: number
+  custodyFee: Currency
+  spendableValue: Currency
+  spent: boolean
 }
 
 export interface LastSpent {

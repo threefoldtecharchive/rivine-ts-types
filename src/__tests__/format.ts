@@ -3,7 +3,7 @@ import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
   spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
   spentAtomicSwapCoinOutputId, coinCreationTransactionJSON, minterDefinitionTransactionJSON,
-  atomicSwapContract
+  atomicSwapContract, blockWithCustodyFee, transactionWithCustodyFees
 } from '../testdata/data'
 import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
@@ -275,6 +275,47 @@ test('test parsing an atomic swap contract address', () => {
     expect(parsedResponse.coinOutputs.length).toBe(1)
     expect(parsedResponse.coinOutputs[0].condition instanceof AtomicSwapCondition)
   }
+
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing block with custody fee', () => {
+  const parser = new Parser()
+  const parsedResponse = parser.ParseBlockResponseJSON(blockWithCustodyFee)
+
+  expect(parsedResponse instanceof Block)
+  expect(parsedResponse.kind()).toBe(ResponseType.Block)
+
+  const expectedBlockId = 'bf52c9124b07b3fc3cbe7113dc377226b5caad902a6312624587e7748f6ffb09'
+
+  expect(parsedResponse.id).toBe(expectedBlockId)
+  expect(parsedResponse.height).toBe(76)
+  expect(parsedResponse.timestamp).toBe(1570720622)
+
+  expect(parsedResponse.transactions.length).toBe(2)
+
+  const firstTx = first(parsedResponse.transactions)
+  expect(firstTx instanceof DefaultTransaction)
+  if (firstTx) {
+    expect(firstTx.blockId).toBe(expectedBlockId)
+  }
+
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing transaction', () => {
+  const hash = 'a7af3a6e827a735f5a0dac599b155f2fa8296dc87ad7c605ed4fbc43563325bf'
+  const parser = new Parser()
+  const parsedResponse = parser.ParseHashResponseJSON(transactionWithCustodyFees, hash) as DefaultTransaction
+
+  expect(parsedResponse instanceof DefaultTransaction)
+  expect(parsedResponse.kind()).toBe(ResponseType.Transaction)
+
+  expect(parsedResponse.id).toBe('a7af3a6e827a735f5a0dac599b155f2fa8296dc87ad7c605ed4fbc43563325bf')
+  expect(parsedResponse.unconfirmed).toBe(false)
+  expect(parsedResponse.version).toBe(1)
 
   // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()

@@ -2,11 +2,12 @@ import Decimal from 'decimal.js'
 import { find, flatten } from 'lodash'
 import {
   AtomicSwapCondition, Condition, MultisignatureCondition,
-  NilCondition, TimelockCondition, UnlockhashCondition, ConditionType
+  NilCondition, TimelockCondition, UnlockhashCondition, ConditionType, CustodyFeeCondition
 } from './conditionTypes'
 import { AtomicSwapFulfillment, Fulfillment, KeyPair, MultisignatureFulfillment, SingleSignatureFulfillment } from './fulfillmentTypes'
 import {
-  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input, LastSpent, MinerPayout, Output, Wallet
+  Block, BlockstakeOutputInfo, CoinOutputInfo, Currency, Input,
+  LastSpent, MinerPayout, Output, Wallet, CustodyFeeMinerPayout, CustodyOutput, CustodyInput
 } from './types'
 import { Transaction, DefaultTransaction, CoinCreationTransaction, MinterDefinitionTransaction } from './transactionTypes'
 
@@ -117,15 +118,13 @@ export class Parser {
 
     // Set spent coin outputs for block creator
     wallet.coinOutputsBlockCreator = this.parseCoinOutputsWallet(spentCoinOutputs, true)
-    wallet.coinOutputsBlockCreator =
-     wallet.coinOutputsBlockCreator
+    wallet.coinOutputsBlockCreator = wallet.coinOutputsBlockCreator
       .concat(this.parseCoinOutputsWallet(unspentCoinOutputs, false))
 
     // Set unspent blockstake outputs for block creator
     wallet.blockStakesOutputsBlockCreator
       = this.parseBlockstakeOutputsWallet(unspentBlockStakesOutputsBlockCreator, false)
-    wallet.blockStakesOutputsBlockCreator
-      = wallet.blockStakesOutputsBlockCreator
+    wallet.blockStakesOutputsBlockCreator = wallet.blockStakesOutputsBlockCreator
         .concat(this.parseBlockstakeOutputsWallet(spentBlockStakesOutputsBlockCreator, true))
 
     // Identifier that will tell that this is a blockcreator wallet
@@ -313,37 +312,16 @@ export class Parser {
   }
 
   private parseBlock (block: any): Block {
-    const { blockid: id, height, transactions, rawblock, minerpayoutids, estimatedactivebs } = block
+    const
+      { blockid: id, height, transactions, rawblock, minerpayoutids, estimatedactivebs, minerpayoutcustodyfees } = block
     const { timestamp, minerpayouts, parentid } = rawblock
 
     const parsedTransactions = transactions.map((tx: any) => this.parseTransaction(tx, id, timestamp))
     const parsedBlock = new Block(id, height, timestamp, parsedTransactions, parentid, estimatedactivebs)
 
-    if (minerpayouts.length > 0) {
-      parsedBlock.minerPayouts = minerpayouts.map((mp: MinerPayout, index: number) => {
-        const payout = {
-          value: new Currency(mp.value, this.precision),
-          unlockhash: mp.unlockhash,
-          id: minerpayoutids[index]
-        }
-        if (index === 0) {
-          return {
-            ...payout,
-            isBlockCreatorReward: true,
-            description: 'Block Creator Reward (new coins)'
-          }
-        } else {
-          const sourceTransactionIds = transactions.filter((tx: any) => tx.rawtransaction.data.minerfees)
-            .map((tx: any) => tx.id)
-          return {
-            ...payout,
-            isBlockCreatorReward: false,
-            sourceTransactionIds,
-            description: 'All Transaction fees combined'
-          }
-        }
-      })
-    }
+    parsedBlock.minerPayouts
+      = this.parseMinerPayoutsBlock(minerpayouts, minerpayoutcustodyfees, minerpayoutids, transactions)
+
     return parsedBlock
   }
 
@@ -377,17 +355,19 @@ export class Parser {
     const coinOutputIds = tx.coinoutputids || []
     const coinOutputUnlockhashes = tx.coinoutputunlockhashes || []
     const coinInputs = rawtransaction.data.coininputs || []
+    const coinOutputCustodyFees = tx.coinoutputcustodyfees || []
 
     // todo add arbitrary data and extension props
     let transaction: DefaultTransaction = new DefaultTransaction(version)
 
     transaction.blockStakeOutputs = this.getBlockstakeOutputs(bsOutputs, bsOutputIds)
     const blockStakeInputsOutputs = this.getBlockstakeOutputs(blockstakeinputoutputs, bsOutputIds)
-    transaction.blockStakeInputs = this.getInputs(bsInputs, blockStakeInputsOutputs)
+    transaction.blockStakeInputs = this.getInputs(bsInputs, blockStakeInputsOutputs, blockstakeinputoutputs)
 
-    transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes)
-    const coinInputsOutputs = this.getOutputs(coininputoutputs, coinOutputIds, coinOutputUnlockhashes)
-    transaction.coinInputs = this.getInputs(coinInputs, coinInputsOutputs)
+    transaction.coinOutputs = this.getOutputs(coinOutputs, coinOutputIds, coinOutputUnlockhashes, coinOutputCustodyFees)
+    const coinInputsOutputs
+      = this.getOutputs(coininputoutputs, coinOutputIds, coinOutputUnlockhashes, coinOutputCustodyFees)
+    transaction.coinInputs = this.getInputs(coinInputs, coinInputsOutputs, coininputoutputs)
 
     // Set blockConstants
     transaction.blockId = blockId
@@ -425,11 +405,12 @@ export class Parser {
   (tx: any, blockId?: string, blockTime?: number): CoinCreationTransaction {
     const { rawtransaction, id, unconfirmed, coinoutputids, coinoutputunlockhashes, height } = tx
     const { data, version } = rawtransaction
+    const coinOutputCustodyFees = tx.coinoutputcustodyfees || []
 
     const { mintfulfillment, coinoutputs } = data
 
     const parsedMintFulfillment = this.getFulfillment({ fulfillment: mintfulfillment })
-    const parsedOutputs = this.getOutputs(coinoutputs, coinoutputids, coinoutputunlockhashes)
+    const parsedOutputs = this.getOutputs(coinoutputs, coinoutputids, coinoutputunlockhashes, coinOutputCustodyFees)
 
     const transaction = new CoinCreationTransaction(version, parsedMintFulfillment, parsedOutputs)
 
@@ -559,13 +540,27 @@ export class Parser {
     return blockStakeOutputInfo
   }
 
-  private getOutputs (outputs: any, outputIds: any, coinOutputUnlockhashes: any): Output[] {
+  private getOutputs (outputs: any, outputIds: any, coinOutputUnlockhashes: any, coinOutputCustodyFees: any): Output[] {
     if (!outputs) return []
-    return outputs.map((output: Output, index: number) => {
-      return {
+    return outputs.map((output: Output | CustodyOutput, index: number) => {
+      let out = {
         id: outputIds[index],
         value: new Currency(output.value, this.precision),
         condition: this.getCondition(output, coinOutputUnlockhashes, index)
+      }
+      if (coinOutputCustodyFees && coinOutputCustodyFees.length > 0) {
+        const custodyFeeOutput: CustodyOutput = {
+          ...out,
+          creationTime: coinOutputCustodyFees[index].creationtime,
+          isCustodyFee: coinOutputCustodyFees[index].iscustodyfee,
+          feeComputationTime: coinOutputCustodyFees[index].feecomputationtime,
+          custodyFee: new Currency(coinOutputCustodyFees[index].custodyfee, this.precision),
+          spendableValue: new Currency(coinOutputCustodyFees[index].spendablevalue, this.precision),
+          spent: coinOutputCustodyFees[index].spent
+        }
+        return custodyFeeOutput
+      } else {
+        return out
       }
     })
   }
@@ -619,19 +614,34 @@ export class Parser {
     })
   }
 
-  private getInputs (inputs: any, outputs: any): Input[] {
-    return inputs.map((input: Input, index: number) => {
+  private getInputs (inputs: any, outputs: any, inputsOutputs: any): [Input] {
+    return inputs.map((input: Input | CustodyInput, index: number) => {
       const parentOutput = outputs[index]
-      const parsedInput = {
+      let parsedInput: Input | CustodyInput = {
         parentid: input.parentid,
         fulfillment: this.getFulfillment(input)
       }
       if (parentOutput) {
-        return {
+        parsedInput = {
           ...parsedInput,
           parentOutput
         }
       }
+
+      // If there is a custody fee, set it on the input
+      if (inputsOutputs[index].custody) {
+        const { custody } = inputsOutputs[index]
+        parsedInput = {
+          ...parsedInput,
+          creationTime: custody.creationtime,
+          isCustodyFee: custody.iscustodyfee,
+          feeComputationTime: custody.feecomputationtime,
+          custodyFee: new Currency(custody.custodyfee, this.precision),
+          spendableValue: new Currency(custody.spendablevalue, this.precision),
+          spent: custody.spent
+        }
+      }
+
       return parsedInput
     })
   }
@@ -665,6 +675,8 @@ export class Parser {
       case ConditionType.MultisignatureCondition:
         return new
           MultisignatureCondition(4, data.unlockhashes, data.minimumsignaturecount, coinOutputUnlockhashes[index])
+      case ConditionType.CustodyFeeCondition:
+        return new CustodyFeeCondition(128, coinOutputUnlockhashes[index])
       default:
         throw new Error('Condition is not recongnised on data')
     }
@@ -705,5 +717,59 @@ export class Parser {
       default:
         throw new Error('Fulfillment is not recongnised on data')
     }
+  }
+
+  // tslint:disable-next-line
+  private parseMinerPayoutsBlock (minerpayouts: any, minerpayoutcustodyfees: any, minerpayoutids: any, transactions: any): MinerPayout[] | undefined {
+    if (minerpayouts && minerpayouts.length > 0) {
+      return minerpayouts.map((mp: MinerPayout, index: number) => {
+        let payout: MinerPayout | CustodyFeeMinerPayout
+
+        // Compose info we already can set
+        payout = {
+          value: new Currency(mp.value, this.precision),
+          unlockhash: mp.unlockhash,
+          id: minerpayoutids[index],
+          isBlockCreatorReward: false
+        }
+
+        // first element is always block creator reward
+        if (index === 0) {
+          payout = {
+            ...payout,
+            isBlockCreatorReward: true,
+            description: 'Block Creator Reward (new coins)'
+          }
+        } else {
+          const sourceTransactionIds = transactions.filter((tx: any) => tx.rawtransaction.data.minerfees)
+            .map((tx: any) => tx.id)
+          // add source transaction ids
+          payout = {
+            ...payout,
+            sourceTransactionIds,
+            description: 'All Transaction fees combined'
+          }
+        }
+
+        if (minerpayoutcustodyfees && minerpayoutcustodyfees.length > 0) {
+          // if no minerpayout on index is present just return the payout
+          if (!minerpayoutcustodyfees[index]) return payout
+
+          const custodyFeePayout: CustodyFeeMinerPayout = {
+            ...payout,
+            creationTime: minerpayoutcustodyfees[index].creationtime,
+            isCustodyFee: minerpayoutcustodyfees[index].iscustodyfee,
+            feeComputationTime: minerpayoutcustodyfees[index].feecomputationtime,
+            custodyFee: new Currency(minerpayoutcustodyfees[index].custodyfee, this.precision),
+            spendableValue: new Currency(minerpayoutcustodyfees[index].spendablevalue, this.precision),
+            spent: minerpayoutcustodyfees[index].spent
+          }
+          return custodyFeePayout
+        } else {
+          return payout
+        }
+      })
+    }
+    return
   }
 }

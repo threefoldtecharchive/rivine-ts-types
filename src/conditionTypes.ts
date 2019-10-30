@@ -1,9 +1,12 @@
+import { Currency } from './types'
+
 export enum ConditionType {
   NilCondition,
   UnlockhashCondition,
   AtomicSwapCondition,
   TimelockCondition,
-  MultisignatureCondition
+  MultisignatureCondition,
+  CustodyFeeCondition = 128
 }
 
 export abstract class Condition {
@@ -96,5 +99,18 @@ export class MultisignatureCondition extends Condition {
 
   public getConditionType (): number {
     return ConditionType.MultisignatureCondition
+  }
+}
+
+export class CustodyFeeCondition extends Condition {
+  public custodyFeeVoidAddress: string
+
+  constructor (type: number, custodyFeeVoidAddress: string) {
+    super(type)
+    this.custodyFeeVoidAddress = custodyFeeVoidAddress
+  }
+
+  public getConditionType (): number {
+    return ConditionType.CustodyFeeCondition
   }
 }
