@@ -12,6 +12,8 @@ import {
 import { Transaction, DefaultTransaction, CoinCreationTransaction, MinterDefinitionTransaction } from './transactionTypes'
 
 const nullId = '0000000000000000000000000000000000000000000000000000000000000000'
+// Void address of custody fees
+const custodyVoidAddress = '800000000000000000000000000000000000000000000000000000000000000000af7bedde1fea'
 
 export class Parser {
   public precision: number = 9
@@ -34,6 +36,9 @@ export class Parser {
     // Save hash in state
     this.hash = hash
 
+    if (this.hash === custodyVoidAddress) {
+      return this.parseCustodyVoidAddress(res)
+    }
     if (res.hashtype === 'unlockhash') {
       return this.parseWalletAddress(res)
     }
@@ -56,11 +61,10 @@ export class Parser {
   }
 
   private parseWalletAddress (res: any): Wallet {
-    const transactions = res.transactions
-    const blocks = res.blocks
+    const { transactions, blocks, multisigaddresses } = res
 
     // If blocks field is populated then the address is probably the address of a blockcreator
-    if (blocks) { return this.parseWalletForBlockCreator(blocks, transactions) }
+    if (blocks) { return this.parseWalletForBlockCreator(blocks, transactions, multisigaddresses) }
 
     const { spentCoinOutputs, unspentCoinOutputs, availableBalance, lastCoinSpent }
       = this.findCoinOutputOutputAppearances(this.hash, transactions)
@@ -83,10 +87,14 @@ export class Parser {
     wallet.coinOutputs
       = wallet.coinOutputs.concat(this.parseCoinOutputsWallet(spentCoinOutputs, true))
 
+    if (multisigaddresses) {
+      wallet.multisigAddressess = multisigaddresses
+    }
+
     return wallet
   }
 
-  private parseWalletForBlockCreator (blocks: any, transactions: any): Wallet {
+  private parseWalletForBlockCreator (blocks: any, transactions: any, multisigAddresses: string[]): Wallet {
     const { spentMinerPayouts, unspentMinerPayouts, availableBalance: availableMinerfeeBalance }
       = this.findMinerPayoutAppearances(this.hash, transactions, blocks)
     // tslint:disable-next-line
@@ -129,6 +137,41 @@ export class Parser {
 
     // Identifier that will tell that this is a blockcreator wallet
     wallet.isBlockCreator = true
+
+    if (multisigAddresses) {
+      wallet.multisigAddressess = multisigAddresses
+    }
+
+    return wallet
+  }
+
+  private parseCustodyVoidAddress (res: any): Wallet {
+    const { transactions } = res
+
+    const { spentCoinOutputs, unspentCoinOutputs, availableBalance, lastCoinSpent }
+      = this.findCoinOutputOutputAppearances(this.hash, transactions)
+
+    const availableWalletCoinBalance = new Currency(availableBalance, this.precision)
+
+    // No blockstake balance is available on a custody void address
+    const availableWalletBlockStakeBalance = new Currency(0, this.precision)
+
+    const wallet = new Wallet(this.hash, availableWalletCoinBalance, availableWalletBlockStakeBalance)
+
+    // Set Transaction on wallet object
+    wallet.transactions = res.transactions.map((tx: any) => this.parseTransaction(tx))
+
+    // Set last coin spentlet.lastCoinSpent = lastCoinSpent
+    wallet.lastCoinSpent = lastCoinSpent
+
+    // Set unspent coinoutputs on wallet object
+    wallet.coinOutputs = this.parseCoinOutputsWallet(unspentCoinOutputs, false)
+    // Set spent coinoutputs on wallet object
+    wallet.coinOutputs
+      = wallet.coinOutputs.concat(this.parseCoinOutputsWallet(spentCoinOutputs, true))
+
+    // Indicate its a custody void wallet
+    wallet.isCustodyVoid = true
 
     return wallet
   }
@@ -184,17 +227,24 @@ export class Parser {
 
     const unspentCoinOutputs = transactions
       .map((tx: any) => {
-        if (!tx.coinoutputunlockhashes) { return }
+        if (!tx.coinoutputunlockhashes) return
         const ucoIndex = tx.coinoutputunlockhashes.findIndex(
           (uh: any) => uh === address
         )
         const coinOutput = tx.rawtransaction.data.coinoutputs[ucoIndex]
+        let coinOutputCustodyFee = {}
+        if (tx.coinoutputcustodyfees) {
+          coinOutputCustodyFee = tx.coinoutputcustodyfees[ucoIndex]
+        }
+
         if (coinOutput) {
           return {
             ...coinOutput,
+            ...coinOutputCustodyFee,
             coinOutputId: tx.coinoutputids[ucoIndex],
             blockHeight: tx.height,
-            txid: tx.id
+            txid: tx.id,
+            address
           }
         }
       })
@@ -206,7 +256,7 @@ export class Parser {
     }
 
     transactions.forEach((tx: any) => {
-      if (!tx.rawtransaction.data.coininputs) { return }
+      if (!tx.rawtransaction.data.coininputs) return
       tx.rawtransaction.data.coininputs.forEach((ci: any) => {
         const existsInUcosIndex: number = unspentCoinOutputs.findIndex(
           (uco: any) => uco.coinOutputId === ci.parentid
@@ -247,7 +297,7 @@ export class Parser {
 
     const ucos = transactions
       .map((tx: any) => {
-        if (!tx.blockstakeunlockhashes) { return }
+        if (!tx.blockstakeunlockhashes) return
         const buIndex = tx.blockstakeunlockhashes.findIndex(
           (uh: any) => uh === address
         )
@@ -270,7 +320,7 @@ export class Parser {
     }
 
     transactions.forEach((tx: any) => {
-      if (!tx.rawtransaction.data.blockstakeinputs) { return }
+      if (!tx.rawtransaction.data.blockstakeinputs) return
       const spentUcos = tx.rawtransaction.data.blockstakeinputs.map(
         (ci: any) => {
           const existsInBusIndex: number = ucos.findIndex(
@@ -542,6 +592,7 @@ export class Parser {
 
   private getOutputs (outputs: any, outputIds: any, coinOutputUnlockhashes: any, coinOutputCustodyFees: any): Output[] {
     if (!outputs) return []
+    // console.log(outputs)
     return outputs.map((output: Output | CustodyOutput, index: number) => {
       let out = {
         id: outputIds[index],
@@ -549,14 +600,19 @@ export class Parser {
         condition: this.getCondition(output, coinOutputUnlockhashes, index)
       }
       if (coinOutputCustodyFees && coinOutputCustodyFees.length > 0) {
+        if (!coinOutputCustodyFees[index]) return
         const custodyFeeOutput: CustodyOutput = {
           ...out,
           creationTime: coinOutputCustodyFees[index].creationtime,
           isCustodyFee: coinOutputCustodyFees[index].iscustodyfee,
           feeComputationTime: coinOutputCustodyFees[index].feecomputationtime,
-          custodyFee: new Currency(coinOutputCustodyFees[index].custodyfee, this.precision),
-          spendableValue: new Currency(coinOutputCustodyFees[index].spendablevalue, this.precision),
           spent: coinOutputCustodyFees[index].spent
+        }
+        if (coinOutputCustodyFees[index].custodyfee && coinOutputCustodyFees[index].custodyfee > 0) {
+          custodyFeeOutput.custodyFee = new Currency(coinOutputCustodyFees[index].custodyfee, this.precision)
+        }
+        if (coinOutputCustodyFees[index].spendablevalue && coinOutputCustodyFees[index].spendablevalue > 0) {
+          custodyFeeOutput.spendableValue = new Currency(coinOutputCustodyFees[index].spendablevalue, this.precision)
         }
         return custodyFeeOutput
       } else {
@@ -567,14 +623,31 @@ export class Parser {
 
   private parseCoinOutputsWallet (outputs: any, spent: boolean): Output[] {
     return outputs.map((output: any, index: number) => {
-      return {
+      let out: Output | CustodyOutput = {
         id: output.coinOutputId,
         value: new Currency(output.value, this.precision),
         spent,
         blockHeight: output.blockHeight,
         txId: output.txid,
-        condition: this.getCondition(output, [], index)
+        condition: this.getCondition(output, [output.address], 0)
       }
+      // if output.iscustodyfee is present on the obj then we know all the remaining properties will also be there
+      if (output.iscustodyfee !== undefined) {
+        out = {
+          ...out,
+          creationTime: output.creationtime,
+          isCustodyFee: output.iscustodyfee,
+          feeComputationTime: output.feecomputationtime
+        }
+
+        if (output.custodyfee && output.custodyfee > 0) {
+          out.custodyFee = new Currency(output.custodyfee, this.precision)
+        }
+        if (output.spendableValue && output.spendableValue > 0) {
+          out.spendableValue = new Currency(output.spendableValue, this.precision)
+        }
+      }
+      return out
     })
   }
 

@@ -3,7 +3,8 @@ import { transactionIdJSON, blockidJSON, unlockhash, unlockhashBlockCreator,
   coinoutputIdJSON, unspentCoinoutputIdJSON, unspentCoinOutputIDBlockCreatorJSON,
   spentCoinOutputIdBlockCreatorJSON, unspentBlockStakeOutputIdJSON, blockResponseJSON,
   spentAtomicSwapCoinOutputId, coinCreationTransactionJSON, minterDefinitionTransactionJSON,
-  atomicSwapContract, blockWithCustodyFee, transactionWithCustodyFees
+  atomicSwapContract, blockWithCustodyFee, transactionWithCustodyFees, walletWithCustodyFees,
+  custodyVoidAddress
 } from '../testdata/data'
 import { Block, Wallet, ResponseType, CoinOutputInfo, BlockstakeOutputInfo } from '../types'
 import { first } from 'lodash'
@@ -305,7 +306,7 @@ test('test parsing block with custody fee', () => {
   expect(parsedResponse).toMatchSnapshot()
 })
 
-test('test parsing transaction', () => {
+test('test parsing transaction with custody fees', () => {
   const hash = 'a7af3a6e827a735f5a0dac599b155f2fa8296dc87ad7c605ed4fbc43563325bf'
   const parser = new Parser()
   const parsedResponse = parser.ParseHashResponseJSON(transactionWithCustodyFees, hash) as DefaultTransaction
@@ -316,6 +317,35 @@ test('test parsing transaction', () => {
   expect(parsedResponse.id).toBe('a7af3a6e827a735f5a0dac599b155f2fa8296dc87ad7c605ed4fbc43563325bf')
   expect(parsedResponse.unconfirmed).toBe(false)
   expect(parsedResponse.version).toBe(1)
+
+  // Check if everything else is correct
+  expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing unlockhash with custody fees', () => {
+  const hash = '0178c06a59eca06ca656c400cfc5960da128162a8aa122a41b1051bff93d4c10c17b024cc8af88'
+  const parser = new Parser()
+  const parsedResponse = parser.ParseHashResponseJSON(walletWithCustodyFees, hash) as Wallet
+
+  expect(parsedResponse instanceof Wallet)
+
+  expect(parsedResponse.isBlockCreator).toBe(false)
+  expect(parsedResponse.address).toBe(hash)
+
+  // Check if everything else is correct
+  // expect(parsedResponse).toMatchSnapshot()
+})
+
+test('test parsing custody void address', () => {
+  const hash = '800000000000000000000000000000000000000000000000000000000000000000af7bedde1fea'
+  const parser = new Parser()
+  const parsedResponse = parser.ParseHashResponseJSON(custodyVoidAddress, hash) as Wallet
+
+  expect(parsedResponse instanceof Wallet)
+
+  expect(parsedResponse.isCustodyVoid).toBe(true)
+
+  expect(parsedResponse.address).toBe(hash)
 
   // Check if everything else is correct
   expect(parsedResponse).toMatchSnapshot()

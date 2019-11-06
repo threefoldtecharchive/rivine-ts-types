@@ -46,6 +46,9 @@ export class Wallet extends Response {
   // this identifier can tell us if the Wallet belong to a blockcreator
   public isBlockCreator: boolean
 
+  // this identifier can tell us if the Wallet belong to a custody fee void address
+  public isCustodyVoid: boolean
+
   public confirmedCoinBalance: Currency
   public lastCoinSpent?: LastSpent
   public confirmedBlockstakeBalance: Currency
@@ -57,14 +60,17 @@ export class Wallet extends Response {
   public coinOutputsBlockCreator?: Output[]
   public blockStakesOutputsBlockCreator?: Output[]
 
+  public multisigAddressess?: string[]
+
   constructor (address: string, confirmedCoinBalance: Currency, confirmedBlockstakeBalance: Currency) {
     super()
     this.address = address
     this.confirmedCoinBalance = confirmedCoinBalance
     this.confirmedBlockstakeBalance = confirmedBlockstakeBalance
 
-    // Set default to false
+    // Set defaults to false
     this.isBlockCreator = false
+    this.isCustodyVoid = false
   }
 
   public kind (): number {
@@ -73,10 +79,10 @@ export class Wallet extends Response {
 }
 
 export class CoinOutputInfo extends Response {
-  public output: Output
+  public output: Output | CustodyOutput
   public input?: Input
 
-  constructor (output: Output) {
+  constructor (output: Output | CustodyOutput) {
     super()
     this.output = output
   }
@@ -125,6 +131,7 @@ export interface Output {
   blockId?: string
   blockHeight?: number
   isBlockCreatorReward?: boolean
+  isCustodyVoid?: boolean
   unlockhash?: string
 }
 
@@ -132,9 +139,9 @@ export interface CustodyOutput extends Output {
   creationTime: number
   isCustodyFee: boolean
   feeComputationTime: number
-  custodyFee: Currency
-  spendableValue: Currency
-  spent: boolean
+  custodyFee?: Currency
+  spendableValue?: Currency
+  spent?: boolean
 }
 
 export interface AtomicSwapOutput extends Output {
